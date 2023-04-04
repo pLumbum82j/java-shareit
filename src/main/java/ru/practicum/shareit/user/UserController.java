@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class UserController {
      * @return созданный объект пользователя
      */
     @PostMapping()
-    public User create(@RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         return userService.create(user);
     }
 
