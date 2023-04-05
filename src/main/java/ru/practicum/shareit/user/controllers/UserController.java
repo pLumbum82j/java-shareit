@@ -1,6 +1,9 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.controllers;
 
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.models.dto.UserDto;
+import ru.practicum.shareit.user.services.UserService;
+import ru.practicum.shareit.user.models.User;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,19 +27,24 @@ public class UserController {
      * @return Список пользователей
      */
     @GetMapping()
-    public List<User> get() {
+    public List<UserDto> get() {
         return userService.get();
+    }
+
+    @GetMapping("/{userId}")
+    public UserDto get(@PathVariable Long userId) {
+        return userService.get(userId);
     }
 
     /**
      * Метод (эндпоинт) создания пользователя
      *
-     * @param user Принятый объект пользователя по эндпоинту
+     * @param userDto Принятый объект пользователя по эндпоинту
      * @return созданный объект пользователя
      */
     @PostMapping()
-    public User create(@Valid @RequestBody User user) {
-        return userService.create(user);
+    public UserDto create(@Valid @RequestBody UserDto userDto) {
+        return userService.create(userDto);
     }
 
 }

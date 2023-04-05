@@ -1,14 +1,17 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.storages;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.user.models.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserStorageInMemory implements UserStorage {
 
-    private final List<User> userList = new ArrayList<>();
+    private final Map<Long, User> userList = new HashMap<>();
     private Long id = 1L;
 
     /**
@@ -22,13 +25,21 @@ public class UserStorageInMemory implements UserStorage {
 
     @Override
     public List<User> get() {
-        return userList;
+        return new ArrayList<>(userList.values());
+    }
+
+
+    @Override
+    public User get(Long userId) {
+        return userList.get(userId);
     }
 
     @Override
     public User create(User user) {
         user.setId(generatorId());
-        userList.add(user);
+        userList.put(user.getId(), user);
         return user;
     }
+
+
 }
