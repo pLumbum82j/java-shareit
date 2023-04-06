@@ -10,7 +10,6 @@ import ru.practicum.shareit.user.models.dto.UserDto;
 import ru.practicum.shareit.user.storages.UserStorage;
 import ru.practicum.shareit.user.models.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,30 +31,47 @@ public class UserServiceInMemory implements UserService {
 
     public UserDto get(@PathVariable Long userId) {
         containUserId(userId);
-        log.debug("Получен запрос на поиск пользователя по ID {}", userId);
+        log.debug("Получен запрос на поиск пользователя по ID: {}", userId);
         return UserMapper.toUserDto(userStorage.get(userId));
     }
 
     @Override
     public UserDto create(UserDto userDto) {
         User userTemp = UserMapper.toUser(userDto);
-//        if (userStorage.isContainUserId(userTemp.getId())) {
-//            throw new ObjectUnknownException("Пользователь с ID " + userTemp.getId() + " уже существует");
-//        }
-        if (userStorage.get().stream().anyMatch(user -> user.getEmail().equals(userTemp.getEmail()))) {
-            throw new ObjectAlreadyExistsException("Пользователь с ID " + userTemp.getEmail() + " уже существует");
+
+        if (containUserName(userTemp)) {
+            throw new ObjectAlreadyExistsException("Пользователь с name: " + userTemp.getName() + " уже существует");
+        }
+        //if (userStorage.get().stream().anyMatch(user -> user.getEmail().equals(userTemp.getEmail()))) {
+        if (containUserEmail(userTemp)) {
+            throw new ObjectAlreadyExistsException("Пользователь с email: " + userTemp.getEmail() + " уже существует");
         }
 
         User userResult = userStorage.create(userTemp);
-        log.debug("Пользователь с именем {} успешно создан", userTemp.getName());
+        log.debug("Пользователь с именем: {} успешно создан", userTemp.getName());
         return UserMapper.toUserDto(userResult);
     }
 
     public UserDto update(Long userId, UserDto userDto) {
         containUserId(userId);
+        User userOld = userStorage.get(userId);
         User userTemp = UserMapper.toUser(userDto);
-        log.debug("Пользователь с ID {} успешно изменён", userId);
-        return UserMapper.toUserDto(userStorage.update(userId, userTemp));
+       // if (userStorage.get().stream().anyMatch(user -> user.getName().equals(userTemp.getName())) && !userTemp.getName().equals(userOld.getName())) {
+        if (containUserName(userTemp) && !userTemp.getName().equals(userOld.getName())) {
+            throw new ObjectAlreadyExistsException("Пользователь с name: " + userTemp.getName() + " уже существует");
+        }
+       // if (userStorage.get().stream().anyMatch(user -> user.getEmail().equals(userTemp.getEmail())) && !userTemp.getEmail().equals(userOld.getEmail())) {
+        if (containUserEmail(userTemp) && !userTemp.getEmail().equals(userOld.getEmail())) {
+            throw new ObjectAlreadyExistsException("Пользователь с email: " + userTemp.getEmail() + " уже существует");
+        }
+        if (userTemp.getEmail() != null) {
+            userOld.setEmail(userTemp.getEmail());
+        }
+        if (userTemp.getName() != null) {
+            userOld.setName(userTemp.getName());
+        }
+        log.debug("Пользователь с ID: {} успешно изменён", userId);
+        return UserMapper.toUserDto(userStorage.update(userId, userOld));
     }
 
     @Override
@@ -65,11 +81,19 @@ public class UserServiceInMemory implements UserService {
         userStorage.delete(userId);
     }
 
+    private boolean containUserName(User userN) {
+        return userStorage.get().stream().anyMatch(user -> user.getName().equals(userN.getName()));
+    }
+
+    private boolean containUserEmail(User userE){
+        return userStorage.get().stream().anyMatch(user -> user.getEmail().equals(userE.getEmail()));
+    }
 
     /**
-     * Метод проверки присутсивя пользователя на сервере
+     * Метод проверки присутствия пользователя на сервере
      */
     private void containUserId(long userId) {
+        //if (userStorage.get().stream().noneMatch(user -> user.getId() == userId)) {
         if (!userStorage.isContainUserId(userId)) {
             throw new ObjectUnknownException("Пользователь с ID " + userId + " не существует");
         }

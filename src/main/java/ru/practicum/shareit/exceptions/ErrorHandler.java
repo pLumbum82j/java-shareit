@@ -13,39 +13,28 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    public static final String ERROR = "error";
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST) //400
-    public Map<String, String> handleArgumentNotValidEx(final MethodArgumentNotValidException e) {
-        log.warn("Ошибка валидации.");
-        return Map.of(ERROR, e.getMessage());
-    }
 
     @ExceptionHandler
     public ResponseEntity<String> handleAlreadyExist(final ObjectAlreadyExistsException e) {
-        log.debug(e.getMessage());
+        log.warn("Ошибка, Запрашиваемый объект уже существует.");
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST) //400
-    public Map<String, String> handleObjectUnknownEx(final ObjectUnknownException e) {
-        log.warn("Ошибка, Запрашиваемый объект не найден.");
-        return Map.of(ERROR, e.getMessage());
+    public ResponseEntity<String> handleMethodArgumentNotValid(final MethodArgumentNotValidException e) {
+        log.warn("Ошибка валидации.");
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST) //400
-//    public Map<String, String> handleObjectAlreadyExistsEx(final ObjectAlreadyExistsException e) {
-//        log.warn("Ошибка, Запрашиваемый объект уже существует.");
-//        return Map.of(ERROR, e.getMessage());
-//    }
+    @ExceptionHandler
+    public ResponseEntity<String> handleObjectUnknown(final ObjectUnknownException e) {
+        log.warn("Ошибка, Запрашиваемый объект не найден.");
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
-    @ExceptionHandler({IllegalArgumentException.class, NullPointerException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleNullOrIllegalArgumentEx(final RuntimeException e) {
-        log.warn("Сервер столкнулся с неожиданной ошибкой, которая помешала выполнить запрос.");
-        return Map.of(ERROR, e.getMessage());
+    @ExceptionHandler
+    public ResponseEntity<String> handleInternalServerError(final Throwable e) {
+        log.debug(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
