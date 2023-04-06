@@ -36,10 +36,28 @@ public class UserStorageInMemory implements UserStorage {
 
     @Override
     public User create(User user) {
-        user.setId(generatorId());
+        if (user.getId() == null) {
+            user.setId(generatorId());
+        }
         userList.put(user.getId(), user);
         return user;
     }
 
+    @Override
+    public User update(Long userId, User user) {
+        user.setId(userId);
+        userList.replace(userId, user);
+        return user;
+    }
+
+    @Override
+    public void delete(Long userId) {
+        userList.remove(userId);
+    }
+
+    @Override
+    public boolean isContainUserId(Long userId) {
+        return userList.containsKey(userId);
+    }
 
 }

@@ -47,4 +47,18 @@ public class UserController {
         return userService.create(userDto);
     }
 
+    @PatchMapping("/{userId}")
+    public UserDto update(@PathVariable Long userId, @RequestBody UserDto userDto) {
+        return userService.update(userId, userDto);
+    }
+
+    /**
+     * Метод (эндпоинт) удаления пользователя
+     */
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable Long userId) {
+        userService.delete(userId);
+    }
+
+
 }
