@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.controllers;
+package ru.practicum.shareit.user;
 
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.models.dto.UserDto;

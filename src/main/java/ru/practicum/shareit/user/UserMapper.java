@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.mappers;
+package ru.practicum.shareit.user;
 
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.models.dto.UserDto;

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.practicum.shareit.exceptions.ObjectAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
-import ru.practicum.shareit.user.mappers.UserMapper;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.models.dto.UserDto;
 import ru.practicum.shareit.user.storages.UserStorage;
 import ru.practicum.shareit.user.models.User;
