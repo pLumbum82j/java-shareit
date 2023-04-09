@@ -7,15 +7,15 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
- * TODO Sprint add-controllers.
+ * Модель объекта User
  */
 @Data
 @Builder
 public class User {
     private Long id;
-    @NotBlank (message = "Поле name не может быть пустым")
+    @NotBlank(message = "Поле name не может быть пустым")
     private String name;
-    @NotBlank (message = "Поле email не может быть пустым")
-    @Email (message = "Поле email должно содержать @")
+    @NotBlank(message = "Поле email не может быть пустым")
+    @Email(message = "Поле email должно содержать @")
     private String email;
 }

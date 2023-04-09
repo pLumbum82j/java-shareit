@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Клас UserStorageInMemory для хранения User в оперативной памяти сервера
+ */
 @Repository
 public class UserStorageInMemory implements UserStorage {
 
@@ -27,7 +30,6 @@ public class UserStorageInMemory implements UserStorage {
     public List<User> get() {
         return new ArrayList<>(userList.values());
     }
-
 
     @Override
     public User get(Long userId) {

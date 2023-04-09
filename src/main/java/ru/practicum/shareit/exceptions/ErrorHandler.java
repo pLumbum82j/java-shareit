@@ -5,11 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Map;
-
+/**
+ * Класс ErrorHandler обработчик ошибок
+ */
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
@@ -29,7 +29,7 @@ public class ErrorHandler {
     @ExceptionHandler
     public ResponseEntity<String> handleObjectUnknown(final ObjectUnknownException e) {
         log.warn("Ошибка, Запрашиваемый объект не найден.");
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
