@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
@@ -20,14 +21,10 @@ import java.util.stream.Collectors;
  */
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class ItemServiceInMemory implements ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
-
-    public ItemServiceInMemory(ItemStorage itemStorage, UserService userService) {
-        this.itemStorage = itemStorage;
-        this.userService = userService;
-    }
 
     @Override
     public List<ItemDto> get(Long userId) {

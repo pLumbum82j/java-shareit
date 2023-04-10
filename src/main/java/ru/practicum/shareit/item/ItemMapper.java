@@ -1,11 +1,14 @@
 package ru.practicum.shareit.item;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 
 /**
  * Класс ItemMapper для преобразования Item в ItemDto и обратно
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
     /**
      * Статический метод преобразования Item в ItemDto
