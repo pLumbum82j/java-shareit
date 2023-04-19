@@ -7,6 +7,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 /**
  * Класс ErrorHandler обработчик ошибок
  */
@@ -34,7 +39,10 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<String> handleInternalServerError(final Throwable e) {
-        log.debug(e.getMessage());
+        log.debug("500 {}",e.getMessage());
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        e.printStackTrace(new PrintStream(out));
+//        BufferedReader stack = new BufferedReader(e.printStackTrace(new PrintStream(out)));
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
