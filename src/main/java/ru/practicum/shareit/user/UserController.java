@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.models.dto.UserDto;
 import ru.practicum.shareit.user.services.UserService;
@@ -13,8 +14,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/users")
-@RequiredArgsConstructor
 public class UserController {
+
+    public UserController(@Qualifier("userServiceDb") UserService userService) {
+        this.userService = userService;
+    }
 
     private final UserService userService;
 

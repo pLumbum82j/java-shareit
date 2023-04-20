@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.item.ItemMapper;
@@ -21,8 +22,12 @@ import java.util.stream.Collectors;
  */
 @Log4j2
 @Service
-@RequiredArgsConstructor
 public class ItemServiceInMemory implements ItemService {
+    public ItemServiceInMemory(ItemStorage itemStorage, @Qualifier("userServiceInMemory") UserService userService) {
+        this.itemStorage = itemStorage;
+        this.userService = userService;
+    }
+
     private final ItemStorage itemStorage;
     private final UserService userService;
 
