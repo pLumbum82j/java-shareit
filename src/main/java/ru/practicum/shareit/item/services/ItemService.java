@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.services;
 
+import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public interface ItemService {
      * @return Объект ItemDto
      */
     ItemDto get(Long userId, Long itemId);
+
+    Item getItem(long itemId);
 
     /**
      * Метод получения списка ItemDto с использованием поиска по тексту и проверкой ID пользователя

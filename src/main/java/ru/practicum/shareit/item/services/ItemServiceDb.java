@@ -1,14 +1,13 @@
 package ru.practicum.shareit.item.services;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.models.dto.ItemDto;
-import ru.practicum.shareit.item.storages.ItemStorage;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
@@ -17,52 +16,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Класс ItemServiceInMemory для отработки логики запросов и логирования
- */
-@Log4j2
 @Service
-public class ItemServiceInMemory implements ItemService {
-    public ItemServiceInMemory(ItemStorage itemStorage, @Qualifier("userServiceInMemory") UserService userService) {
-        this.itemStorage = itemStorage;
+@Slf4j
+
+public class ItemServiceDb implements ItemService {
+    public ItemServiceDb(ItemRepository itemRepository, @Qualifier("userServiceDb") UserService userService) {
+        this.itemRepository = itemRepository;
         this.userService = userService;
     }
 
-    private final ItemStorage itemStorage;
+    private final ItemRepository itemRepository;
     private final UserService userService;
 
     @Override
     public List<ItemDto> get(Long userId) {
+        User user = UserMapper.toUser(userService.get(userId));
         log.debug("Получен запрос на список ItemDto по userId: {}", userId);
-        return itemStorage.get().stream()
-                .filter(item -> item.getOwner().getId().equals(userId))
-                .map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemRepository.findAllByOwner(user).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
     public ItemDto get(Long userId, Long itemId) {
         userService.get(userId);
-        containItemId(itemId);
-        Item item = itemStorage.get(itemId);
+        // List<ItemDto> itemDtoList = get(userId);
         log.debug("Получен запрос на ItemDto по itemId: {} и userId: {}", itemId, userId);
-        return ItemMapper.toItemDto(item);
+        return ItemMapper.toItemDto(itemRepository.get(itemId));
     }
 
     @Override
     public Item getItem(long itemId) {
-        return null;
+        return itemRepository.get(itemId);
     }
 
     @Override
     public List<ItemDto> search(Long userId, String text) {
-        userService.get(userId);
+        UserMapper.toUser(userService.get(userId));
         if (text.isEmpty() || text.isBlank()) {
             log.debug("Получен запрос на список ItemDto по text: {} - ничего не найдено", text);
             return new ArrayList<>();
         } else {
             log.debug("Получен запрос на список ItemDto по text: {} - найдены совпадения по тексту", text);
-            return itemStorage.search(text.toLowerCase()).stream()
-                    .map(ItemMapper::toItemDto).collect(Collectors.toList());
+            return itemRepository.search(text).stream().map(ItemMapper::toItemDto).filter(ItemDto::getAvailable).collect(Collectors.toList());
         }
     }
 
@@ -71,18 +65,19 @@ public class ItemServiceInMemory implements ItemService {
         User user = UserMapper.toUser(userService.get(userId));
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
+        itemRepository.save(item);
         log.debug("Получен запрос на создание Item по userId: {}", userId);
-        return ItemMapper.toItemDto(itemStorage.create(item));
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemDto update(Long userId, Long itemId, ItemDto itemDto) {
-        userService.get(userId);
-        Item itemOld = itemStorage.get(itemId);
-        Item itemTemp = ItemMapper.toItem(itemDto);
-        if (!userId.equals(itemOld.getOwner().getId())) {
+        User user = UserMapper.toUser(userService.get(userId));
+        Item itemOld = itemRepository.findById(itemId).get();
+        if (!itemOld.getOwner().getId().equals(userId)) {
             throw new ObjectUnknownException("Пользователю с идентификатором ID: " + userId + " недоступно форматирование вещи ID: " + itemId);
         }
+        Item itemTemp = ItemMapper.toItem(itemDto);
         if (itemTemp.getName() != null) {
             itemOld.setName(itemTemp.getName());
         }
@@ -93,22 +88,12 @@ public class ItemServiceInMemory implements ItemService {
             itemOld.setAvailable(itemTemp.getAvailable());
         }
         log.debug("Получен запрос на изменение вещи с ID: {}", itemId);
-        return ItemMapper.toItemDto(itemStorage.update(itemId, itemOld));
+        return ItemMapper.toItemDto(itemRepository.save(itemOld));
     }
 
+    @Override
     public void delete(Long itemId) {
-        containItemId(itemId);
-        itemStorage.delete(itemId);
-    }
-
-    /**
-     * Метод проверки вещи на сервере по её ID
-     *
-     * @param itemId ID вещи
-     */
-    private void containItemId(long itemId) {
-        if (!itemStorage.isContainItemId(itemId)) {
-            throw new ObjectUnknownException("Вещь с ID " + itemId + " не существует");
-        }
+        log.debug("Получен запрос на удаление Item по itemId: {}", itemId);
+        itemRepository.deleteById(itemId);
     }
 }

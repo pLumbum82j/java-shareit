@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.models;
 
 import lombok.*;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.models.User;
 
 import javax.persistence.*;
@@ -19,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "items")
 public class Item {
     @Id
-    @Column(name = "id")
+    @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name")
@@ -36,5 +35,9 @@ public class Item {
     private User owner;
     @Column(name = "request_id")
     private Long request;
+//    @OneToMany(mappedBy = "item_id", fetch = FetchType.LAZY)
+//    private Set<Booking> bookings;
 
+    //@OneToMany(mappedBy = "item_id", fetch = FetchType.LAZY)
+    //private Set<Comment> comments;
 }

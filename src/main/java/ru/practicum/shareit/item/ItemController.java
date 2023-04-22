@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.services.ItemService;
@@ -13,8 +14,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/items")
-@RequiredArgsConstructor
 public class ItemController {
+    public ItemController(@Qualifier("itemServiceDb") ItemService itemService) {
+        this.itemService = itemService;
+    }
+
     private final ItemService itemService;
 
     /**
