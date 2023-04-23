@@ -1,13 +1,11 @@
 package ru.practicum.shareit.booking.models.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.user.models.User;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**

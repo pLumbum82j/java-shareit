@@ -45,7 +45,6 @@ public class BookingServiceDb implements BookingService {
         Booking booking = bookingRepository.get(bookingId);
         if (Objects.equals(booking.getBooker().getId(), userId) || Objects.equals(booking.getItem().getOwner().getId(), userId)) {
             return BookingMapper.toBookingDto(booking);
-
         } else {
             throw new ObjectAccessDeniedException("Отказано в доступе");
         }
@@ -53,13 +52,9 @@ public class BookingServiceDb implements BookingService {
 
     @Override
     public List<BookingDto> getUserBookings(Long userId, String state) {
-        userService.get(userId);
+        BookingState bookingState = checkUserAndBookingState(userId, state);
         LocalDateTime currentDateTime = LocalDateTime.now();
         List<Booking> bookingList = null;
-        BookingState bookingState = BookingState.from(state);
-        if (bookingState == null) {
-            throw new UnknownStatusException("Unknown state: " + state);
-        }
         switch (bookingState) {
             case ALL:
                 bookingList = bookingRepository.getAll(userId);
@@ -85,13 +80,9 @@ public class BookingServiceDb implements BookingService {
 
     @Override
     public List<BookingDto> getOwnerBookings(Long ownerId, String state) {
-        userService.get(ownerId);
+        BookingState bookingState = checkUserAndBookingState(ownerId, state);
         LocalDateTime currentDateTime = LocalDateTime.now();
         List<Booking> bookingList = null;
-        BookingState bookingState = BookingState.from(state);
-        if (bookingState == null) {
-            throw new UnknownStatusException("Unknown state: " + state);
-        }
         switch (bookingState) {
             case ALL:
                 bookingList = bookingRepository.getAllOwner(ownerId);
@@ -153,5 +144,14 @@ public class BookingServiceDb implements BookingService {
             booking.setStatus((BookingStatus.REJECTED));
         }
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
+    }
+
+    private BookingState checkUserAndBookingState(Long id, String state) {
+        userService.get(id);
+        BookingState bookingState = BookingState.from(state);
+        if (bookingState == null) {
+            throw new UnknownStatusException("Unknown state: " + state);
+        }
+        return bookingState;
     }
 }
