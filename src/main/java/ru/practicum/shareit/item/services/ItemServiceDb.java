@@ -3,15 +3,21 @@ package ru.practicum.shareit.item.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.services.BookingService;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
-import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.mappers.CommentMapper;
+import ru.practicum.shareit.item.mappers.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.models.Comment;
 import ru.practicum.shareit.item.models.Item;
+import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +26,15 @@ import java.util.stream.Collectors;
 @Slf4j
 
 public class ItemServiceDb implements ItemService {
-    public ItemServiceDb(ItemRepository itemRepository, @Qualifier("userServiceDb") UserService userService) {
+    public ItemServiceDb(ItemRepository itemRepository, @Qualifier("userServiceDb") UserService userService, BookingRepository bookingRepository) {
         this.itemRepository = itemRepository;
         this.userService = userService;
+        this.bookingRepository = bookingRepository;
     }
 
     private final ItemRepository itemRepository;
     private final UserService userService;
+    private final BookingRepository bookingRepository;
 
     @Override
     public List<ItemDto> get(Long userId) {
@@ -68,6 +76,21 @@ public class ItemServiceDb implements ItemService {
         itemRepository.save(item);
         log.debug("Получен запрос на создание Item по userId: {}", userId);
         return ItemMapper.toItemDto(item);
+    }
+
+    @Override
+    public CommentDto create(CommentDto commentDto, long itemId, long userId) {
+        User user = UserMapper.toUser(userService.get(userId));
+        Item item = itemRepository.get(itemId);
+        Comment comment = new Comment();
+        if (bookingRepository.getFinishedCount(userId, itemId, LocalDateTime.now()) < 0) {
+            throw new ObjectUnknownException("Пользователю с идентификатором ID: " + userId + " недоступно форматирование вещи ID: " + itemId);
+        } else {
+            comment = CommentMapper.toComment(commentDto);
+            comment.setAuthor(user);
+            comment.setItem(item);
+        }
+        return CommentMapper.toCommentDto(comment);
     }
 
     @Override

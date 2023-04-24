@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.services;
 
 import ru.practicum.shareit.item.models.Item;
+import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 
 import java.util.List;
@@ -46,6 +47,8 @@ public interface ItemService {
      * @return Созданный ItemDto
      */
     ItemDto create(Long userId, ItemDto itemDto);
+
+    CommentDto create(CommentDto commentDto, long itemId, long userId);
 
     /**
      * Метод обновления Item

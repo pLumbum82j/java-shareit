@@ -1,12 +1,12 @@
 package ru.practicum.shareit.item.services;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
-import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.mappers.ItemMapper;
 import ru.practicum.shareit.item.models.Item;
+import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.storages.ItemStorage;
 import ru.practicum.shareit.user.UserMapper;
@@ -73,6 +73,11 @@ public class ItemServiceInMemory implements ItemService {
         item.setOwner(user);
         log.debug("Получен запрос на создание Item по userId: {}", userId);
         return ItemMapper.toItemDto(itemStorage.create(item));
+    }
+
+    @Override
+    public CommentDto create(CommentDto commentDto, long itemId, long userId) {
+        return null;
     }
 
     @Override

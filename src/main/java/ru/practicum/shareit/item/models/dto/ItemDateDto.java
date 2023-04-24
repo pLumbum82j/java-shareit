@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.models.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.booking.models.dto.BookingDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,5 +21,11 @@ public class ItemDateDto {
     @NotNull(message = "Поле available не может быть пустым")
     private final Boolean available;
     private final Long request;
+    private final BookingDto lastBooking;
+    private final BookingDto nextBooking;
 
+    static class BookingDto {
+        Long id;
+        Long brookerId;
+    }
 }
