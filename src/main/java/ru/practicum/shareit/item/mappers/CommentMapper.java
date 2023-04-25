@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.models.Comment;
 import ru.practicum.shareit.item.models.dto.CommentDto;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
     public static CommentDto toCommentDto(Comment comment){
@@ -21,7 +23,7 @@ public class CommentMapper {
         return Comment.builder()
                 .id(commentDto.getId())
                 .text(commentDto.getText())
-                .created(commentDto.getCreated())
+                .created(commentDto.getCreated() == null ? LocalDateTime.now() : commentDto.getCreated())
                 .build();
     }
 }
