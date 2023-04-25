@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findAllByOwner(User userId);
+    List<Item> findAllByOwnerIdOrderByIdAsc(Long userId);
     default Item get(long id) {
         return findById(id).orElseThrow(() -> new ObjectUnknownException("Item с ID: " + id + " не существует"));
     }

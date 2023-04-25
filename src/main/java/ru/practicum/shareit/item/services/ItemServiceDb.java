@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.item.mappers.CommentMapper;
@@ -18,10 +19,12 @@ import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,9 +47,9 @@ public class ItemServiceDb implements ItemService {
 
     @Override
     public List<ItemDto> get(Long userId) {
-        User user = UserMapper.toUser(userService.get(userId));
+        UserMapper.toUser(userService.get(userId));
         log.debug("Получен запрос на список ItemDto по userId: {}", userId);
-        return itemRepository.findAllByOwner(user).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemRepository.findAllByOwnerIdOrderByIdAsc(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
@@ -55,7 +58,14 @@ public class ItemServiceDb implements ItemService {
         // List<ItemDto> itemDtoList = get(userId);
         List<Comment> comments = commentRepository.findAllByItemIdOrderByCreatedDesc(itemId);
         log.debug("Получен запрос на ItemDto по itemId: {} и userId: {}", itemId, userId);
-        return ItemMapper.toItemDto(itemRepository.get(itemId),comments);
+        Item item = itemRepository.get(itemId);
+        List<Booking> lastForItem=List.of();
+        List<Booking> nextForItem=List.of();;
+        if (item.getOwner().getId().equals(userId)) {
+            lastForItem = bookingRepository.getLastForItem(itemId, LocalDateTime.now());
+            nextForItem = bookingRepository.getNextForItem(itemId, LocalDateTime.now());
+        }
+        return ItemMapper.toItemDto(item, comments, nextForItem.isEmpty() ? null : nextForItem.get(0), lastForItem.isEmpty() ? null : lastForItem.get(0));
     }
 
     @Override

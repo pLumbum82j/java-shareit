@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;
+import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.models.dto.UserDto;
 

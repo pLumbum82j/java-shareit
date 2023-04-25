@@ -2,14 +2,13 @@ package ru.practicum.shareit.item.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.models.Booking;
+import ru.practicum.shareit.booking.models.dto.BookingDateDto;
 import ru.practicum.shareit.item.models.Comment;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -33,22 +32,30 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemDto toItemDto(Item item, List<Comment> comments) {
-      return ItemDto.builder()
-               .id(item.getId())
-               .name(item.getName())
-               .description(item.getDescription())
-               .available(item.getAvailable())
-               .request(item.getRequest() != null ? item.getRequest() : null)
-               .comments(comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()))
-               .build();
-            //   .comments(comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
-//        ItemDto result =  toItemDto(item);
-//        return result.builder()
-//                .comments(comments.size() == 0 ? null : comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()))
-//                .build();
+    /**
+     * Статический метод преобразования Item в ItemDto с Comments
+     *
+     * @param item     Объект Item
+     * @param comments Список комментариев
+     * @return Объект ItemDto
+     */
+    public static ItemDto toItemDto(Item item, List<Comment> comments, Booking next, Booking last) {
+        ItemDto dto = ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .request(item.getRequest() != null ? item.getRequest() : null)
+                .comments(comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()))
+                .build();
+        if (last != null){
+        dto.setLastBooking(new BookingDateDto(last.getId(),last.getBooker().getId()));
+        }
+        if (next != null){
+            dto.setNextBooking(new BookingDateDto(next.getId(),next.getBooker().getId()));
+        }
+        return dto;
     }
-
 
     /**
      * Статический метод преобразования ItemDto в Item
@@ -64,5 +71,4 @@ public class ItemMapper {
                 .available(itemDto.getAvailable())
                 .build();
     }
-
 }
