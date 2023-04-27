@@ -6,7 +6,6 @@ import ru.practicum.shareit.booking.models.dto.BookingDateDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * Модель объекта Item Data Transfer Object

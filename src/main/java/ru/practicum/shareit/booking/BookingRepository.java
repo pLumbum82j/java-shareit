@@ -5,10 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
-import ru.practicum.shareit.item.models.Item;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -64,13 +62,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "ORDER BY b.end_date DESC LIMIT 1 ", nativeQuery = true)
     List<Booking> getLastForItem(long itemId, LocalDateTime now);
 
-    @Query(value="SELECT * " +
+    @Query(value = "SELECT * " +
             "FROM Bookings b " +
             "WHERE b.item_id = ?1 " +
             "AND b.start_date > ?2 " +
             "AND NOT b.status = 'REJECTED' " +
             "ORDER BY b.end_date ASC LIMIT 1", nativeQuery = true
-            )
+    )
     List<Booking> getNextForItem(long itemId, LocalDateTime now);
 
     @Query(

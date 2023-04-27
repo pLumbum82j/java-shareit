@@ -49,11 +49,11 @@ public class ItemMapper {
                 .request(item.getRequest() != null ? item.getRequest() : null)
                 .comments(comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()))
                 .build();
-        if (last != null){
-        dto.setLastBooking(new BookingDateDto(last.getId(),last.getBooker().getId()));
+        if (last != null) {
+            dto.setLastBooking(new BookingDateDto(last.getId(), last.getBooker().getId()));
         }
-        if (next != null){
-            dto.setNextBooking(new BookingDateDto(next.getId(),next.getBooker().getId()));
+        if (next != null) {
+            dto.setNextBooking(new BookingDateDto(next.getId(), next.getBooker().getId()));
         }
         return dto;
     }
@@ -67,11 +67,11 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .request(item.getRequest() != null ? item.getRequest() : null)
                 .build();
-        if (last != null){
-            dto.setLastBooking(new BookingDateDto(last.getId(),last.getBooker().getId()));
+        if (last != null) {
+            dto.setLastBooking(new BookingDateDto(last.getId(), last.getBooker().getId()));
         }
-        if (next != null){
-            dto.setNextBooking(new BookingDateDto(next.getId(),next.getBooker().getId()));
+        if (next != null) {
+            dto.setNextBooking(new BookingDateDto(next.getId(), next.getBooker().getId()));
         }
         return dto;
     }

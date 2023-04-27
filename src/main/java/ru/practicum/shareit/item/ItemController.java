@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.models.dto.CommentDto;
@@ -73,8 +72,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto create(@RequestHeader("X-Sharer-User-Id") long userId,
-                                    @PathVariable long itemId,
-                                    @Valid @RequestBody CommentDto commentDto
+                             @PathVariable long itemId,
+                             @Valid @RequestBody CommentDto commentDto
     ) {
         return itemService.create(commentDto, itemId, userId);
     }

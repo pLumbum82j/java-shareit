@@ -1,14 +1,14 @@
 package ru.practicum.shareit.item.models;
 
-import lombok.*;
-import ru.practicum.shareit.item.models.dto.CommentDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.models.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Модель объекта Item
@@ -42,7 +42,7 @@ public class Item {
 //    private Set<Booking> bookings;
 
     //@OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-   // @OneToMany(fetch = FetchType.LAZY)
-   // @JoinColumn(name = "item", nullable = false)
+    // @OneToMany(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "item", nullable = false)
     //private List<Comment> comments;
 }

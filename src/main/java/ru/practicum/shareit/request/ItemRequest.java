@@ -5,7 +5,6 @@ import lombok.NonNull;
 import ru.practicum.shareit.user.models.User;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * TODO Sprint add-item-requests.
