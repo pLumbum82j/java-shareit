@@ -1,9 +1,11 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
+import ru.practicum.shareit.item.models.Item;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -14,6 +16,17 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     default Booking get(long id) {
         return findById(id).orElseThrow(() -> new ObjectUnknownException("Бронирование с ID: " + id + " не существует"));
     }
+
+    List<Booking> findAllByBookerId(Long bookerId, Sort sort);
+
+    List<Booking> findAllByBookerIdAndStartIsBeforeAndEndIsAfter(Long bookerId, LocalDateTime start, LocalDateTime end, Sort sort);
+
+    List<Booking> findAllByBookerIdAndEndIsBefore(Long bookerId, LocalDateTime start, Sort sort);
+
+    List<Booking> findAllByBookerIdAndStartIsAfter(Long bookerId, LocalDateTime start, Sort sort);
+
+    List<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
+
     @Query("SELECT b FROM Booking b WHERE b.booker.id = ?1 ORDER BY b.start DESC")
     List<Booking> getAll(long bookerId);
 
@@ -68,5 +81,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                     "AND b.status = ru.practicum.shareit.booking.BookingStatus.APPROVED"
     )
     Integer getFinishedCount(long userId, long itemId, LocalDateTime now);
+
+
+    List<Booking> getAllByItemId(long item);
 }
 

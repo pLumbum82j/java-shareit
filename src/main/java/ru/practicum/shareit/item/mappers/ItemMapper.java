@@ -6,6 +6,7 @@ import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.booking.models.dto.BookingDateDto;
 import ru.practicum.shareit.item.models.Comment;
 import ru.practicum.shareit.item.models.Item;
+import ru.practicum.shareit.item.models.dto.ItemCropDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 
 import java.util.List;
@@ -50,6 +51,24 @@ public class ItemMapper {
                 .build();
         if (last != null){
         dto.setLastBooking(new BookingDateDto(last.getId(),last.getBooker().getId()));
+        }
+        if (next != null){
+            dto.setNextBooking(new BookingDateDto(next.getId(),next.getBooker().getId()));
+        }
+        return dto;
+    }
+
+
+    public static ItemCropDto toItemCropDto(Item item, Booking next, Booking last) {
+        ItemCropDto dto = ItemCropDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .request(item.getRequest() != null ? item.getRequest() : null)
+                .build();
+        if (last != null){
+            dto.setLastBooking(new BookingDateDto(last.getId(),last.getBooker().getId()));
         }
         if (next != null){
             dto.setNextBooking(new BookingDateDto(next.getId(),next.getBooker().getId()));

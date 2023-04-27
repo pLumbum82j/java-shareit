@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.models.Booking;
@@ -44,12 +45,25 @@ public class ItemServiceDb implements ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final Sort sort = Sort.by(Sort.Direction.DESC, "start");
 
     @Override
     public List<ItemDto> get(Long userId) {
         UserMapper.toUser(userService.get(userId));
         log.debug("Получен запрос на список ItemDto по userId: {}", userId);
-        return itemRepository.findAllByOwnerIdOrderByIdAsc(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        List<Item> listItems = itemRepository.findAllByOwnerIdOrderByIdAsc(userId);
+        return listItems.stream().map(
+                i -> {
+                    List<Booking> lastForItem = List.of();
+                    List<Booking> nextForItem = List.of();
+                    if (i.getOwner().getId().equals(userId)) {
+                        lastForItem = bookingRepository.getLastForItem(i.getId(), LocalDateTime.now());
+                        nextForItem = bookingRepository.getNextForItem(i.getId(), LocalDateTime.now());
+                    }
+                    List<Comment> comments = commentRepository.findAllByItemIdOrderByCreatedDesc(i.getId());
+                    return ItemMapper.toItemDto(i, comments, nextForItem.isEmpty() ? null : nextForItem.get(0), lastForItem.isEmpty() ? null : lastForItem.get(0));
+                }
+        ).collect(Collectors.toList());
     }
 
     @Override
@@ -59,8 +73,9 @@ public class ItemServiceDb implements ItemService {
         List<Comment> comments = commentRepository.findAllByItemIdOrderByCreatedDesc(itemId);
         log.debug("Получен запрос на ItemDto по itemId: {} и userId: {}", itemId, userId);
         Item item = itemRepository.get(itemId);
-        List<Booking> lastForItem=List.of();
-        List<Booking> nextForItem=List.of();;
+        List<Booking> lastForItem = List.of();
+        List<Booking> nextForItem = List.of();
+        ;
         if (item.getOwner().getId().equals(userId)) {
             lastForItem = bookingRepository.getLastForItem(itemId, LocalDateTime.now());
             nextForItem = bookingRepository.getNextForItem(itemId, LocalDateTime.now());

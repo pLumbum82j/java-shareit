@@ -41,6 +41,8 @@ public class Item {
 //    @OneToMany(mappedBy = "item_id", fetch = FetchType.LAZY)
 //    private Set<Booking> bookings;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    private List<Comment> comments;
+    //@OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+   // @OneToMany(fetch = FetchType.LAZY)
+   // @JoinColumn(name = "item", nullable = false)
+    //private List<Comment> comments;
 }

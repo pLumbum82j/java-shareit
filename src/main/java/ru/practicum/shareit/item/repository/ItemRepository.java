@@ -11,9 +11,16 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByOwnerIdOrderByIdAsc(Long userId);
+
+
     default Item get(long id) {
         return findById(id).orElseThrow(() -> new ObjectUnknownException("Item с ID: " + id + " не существует"));
     }
+
+//    @Query(" select i " +
+//            "from Item i " +
+//            "JOIN FETCH i.comments")  // JOIN FETCH гарантирует немедленную выборку
+//    List<Item> findAllWithComments();
 
     @Query(" select i from Item i " +
             "where upper(i.name) like upper(concat('%', ?1, '%')) " +

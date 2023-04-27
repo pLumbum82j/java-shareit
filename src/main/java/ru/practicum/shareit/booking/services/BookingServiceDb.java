@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -30,6 +31,7 @@ public class BookingServiceDb implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
     private final ItemService itemService;
+    private final Sort sort = Sort.by(Sort.Direction.DESC, "start");
 
     public BookingServiceDb(BookingRepository bookingRepository,
                             @Qualifier("userServiceDb") UserService userService,
@@ -58,21 +60,27 @@ public class BookingServiceDb implements BookingService {
         switch (bookingState) {
             case ALL:
                 bookingList = bookingRepository.getAll(userId);
+                //bookingList = bookingRepository.findAllByBookerId(userId,sort);
                 break;
             case CURRENT:
                 bookingList = bookingRepository.getAllCurrent(userId, currentDateTime);
+                // bookingList = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(userId, LocalDateTime.now(), LocalDateTime.now(), Sort.by(Sort.Direction.ASC,"start"));
                 break;
             case PAST:
                 bookingList = bookingRepository.getAllPast(userId, currentDateTime);
+                // bookingList = bookingRepository.findAllByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), sort);
                 break;
             case FUTURE:
                 bookingList = bookingRepository.getAllFuture(userId, currentDateTime);
+                // bookingList = bookingRepository.findAllByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), sort);
                 break;
             case WAITING:
                 bookingList = bookingRepository.getAllByStatus(userId, BookingStatus.WAITING);
+                //  bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
                 break;
             case REJECTED:
                 bookingList = bookingRepository.getAllByStatus(userId, BookingStatus.REJECTED);
+                //  bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED, sort);
                 break;
         }
         return bookingList.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
