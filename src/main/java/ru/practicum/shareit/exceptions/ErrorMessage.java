@@ -6,9 +6,12 @@ import lombok.Value;
 
 import java.util.Date;
 
+/**
+ * Класс собственного ответа ошибки
+ */
 @Getter
-@AllArgsConstructor
 @Value
+@AllArgsConstructor
 public class ErrorMessage {
     Date timestamp;
     int statusCode;

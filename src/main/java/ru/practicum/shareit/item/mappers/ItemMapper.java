@@ -3,12 +3,12 @@ package ru.practicum.shareit.item.mappers;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.models.Booking;
-import ru.practicum.shareit.booking.models.dto.BookingDateDto;
+import ru.practicum.shareit.booking.models.dto.BookingShortDto;
 import ru.practicum.shareit.item.models.Comment;
 import ru.practicum.shareit.item.models.Item;
-import ru.practicum.shareit.item.models.dto.ItemCropDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,10 +34,12 @@ public class ItemMapper {
     }
 
     /**
-     * Статический метод преобразования Item в ItemDto с Comments
+     * Статический метод преобразования Item в ItemDto с Comments, NextBooking и LastBooking
      *
      * @param item     Объект Item
      * @param comments Список комментариев
+     * @param next     Следующее бронирование
+     * @param last     Последнее бронирование
      * @return Объект ItemDto
      */
     public static ItemDto toItemDto(Item item, List<Comment> comments, Booking next, Booking last) {
@@ -47,31 +49,13 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .request(item.getRequest() != null ? item.getRequest() : null)
-                .comments(comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()))
+                .comments(comments == null ? new ArrayList<>() : comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()))
                 .build();
         if (last != null) {
-            dto.setLastBooking(new BookingDateDto(last.getId(), last.getBooker().getId()));
+            dto.setLastBooking(new BookingShortDto(last.getId(), last.getBooker().getId()));
         }
         if (next != null) {
-            dto.setNextBooking(new BookingDateDto(next.getId(), next.getBooker().getId()));
-        }
-        return dto;
-    }
-
-
-    public static ItemCropDto toItemCropDto(Item item, Booking next, Booking last) {
-        ItemCropDto dto = ItemCropDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .request(item.getRequest() != null ? item.getRequest() : null)
-                .build();
-        if (last != null) {
-            dto.setLastBooking(new BookingDateDto(last.getId(), last.getBooker().getId()));
-        }
-        if (next != null) {
-            dto.setNextBooking(new BookingDateDto(next.getId(), next.getBooker().getId()));
+            dto.setNextBooking(new BookingShortDto(next.getId(), next.getBooker().getId()));
         }
         return dto;
     }

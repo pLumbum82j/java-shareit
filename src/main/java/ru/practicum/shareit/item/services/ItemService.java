@@ -28,6 +28,12 @@ public interface ItemService {
      */
     ItemDto get(Long userId, Long itemId);
 
+    /**
+     * Получение Item по ID вещи
+     *
+     * @param itemId ID вещи
+     * @return Объект Item
+     */
     Item getItem(long itemId);
 
     /**
@@ -48,6 +54,14 @@ public interface ItemService {
      */
     ItemDto create(Long userId, ItemDto itemDto);
 
+    /**
+     * Метод создания комментария к вещи
+     *
+     * @param commentDto Объект комментария
+     * @param itemId     ID вещи
+     * @param userId     ID пользователя
+     * @return Созданный CommentDto
+     */
     CommentDto create(CommentDto commentDto, long itemId, long userId);
 
     /**

@@ -38,11 +38,4 @@ public class Item {
     private User owner;
     @Column(name = "request_id")
     private Long request;
-//    @OneToMany(mappedBy = "item_id", fetch = FetchType.LAZY)
-//    private Set<Booking> bookings;
-
-    //@OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    // @OneToMany(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "item", nullable = false)
-    //private List<Comment> comments;
 }

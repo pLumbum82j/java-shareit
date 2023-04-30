@@ -21,7 +21,6 @@ public class UserMapper {
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();
-
     }
 
     /**
@@ -36,6 +35,5 @@ public class UserMapper {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .build();
-
     }
 }

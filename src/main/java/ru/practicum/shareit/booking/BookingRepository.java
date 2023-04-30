@@ -2,13 +2,18 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
+import ru.practicum.shareit.item.models.Item;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Интерфейс BookingRepository для обработки запросов к БД
+ */
+@Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     default Booking get(long id) {
@@ -25,62 +30,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
 
-    @Query("SELECT b FROM Booking b WHERE b.booker.id = ?1 ORDER BY b.start DESC")
-    List<Booking> getAll(long bookerId);
+    List<Booking> findAllByItemOwnerId(Long bookerId, Sort sort);
 
-    @Query("SELECT b FROM Booking b WHERE b.booker.id = ?1 AND b.start <= ?2 AND b.end >= ?2 ORDER BY b.start DESC")
-    List<Booking> getAllCurrent(long bookerId, LocalDateTime now);
+    List<Booking> findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(Long bookerId, LocalDateTime start, LocalDateTime end, Sort sort);
 
-    @Query("SELECT b FROM Booking b WHERE b.booker.id = ?1 AND b.end < ?2 ORDER BY b.start DESC")
-    List<Booking> getAllPast(long bookerId, LocalDateTime now);
+    List<Booking> findAllByItemOwnerIdAndEndIsBefore(Long bookerId, LocalDateTime start, Sort sort);
 
-    @Query("SELECT b FROM Booking b WHERE b.booker.id = ?1 AND b.start > ?2 ORDER BY b.start DESC")
-    List<Booking> getAllFuture(long bookerId, LocalDateTime now);
+    List<Booking> findAllByItemOwnerIdAndStartIsAfter(Long bookerId, LocalDateTime start, Sort sort);
 
-    @Query("SELECT b FROM Booking b WHERE b.booker.id = ?1 AND b.status = ?2 ORDER BY b.start DESC")
-    List<Booking> getAllByStatus(long bookerId, BookingStatus status);
+    List<Booking> findAllByItemOwnerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
 
-    @Query("SELECT b FROM Booking b WHERE b.item.owner.id = ?1 ORDER BY b.start DESC")
-    List<Booking> getAllOwner(long bookerId);
+    List<Booking> findAllByItemInAndStatus(List<Item> items, BookingStatus status);
 
-    @Query("SELECT b FROM Booking b WHERE b.item.owner.id = ?1 AND b.start <= ?2 AND b.end >= ?2 ORDER BY b.start DESC")
-    List<Booking> getAllCurrentOwner(long bookerId, LocalDateTime now);
+    List<Booking> findAllByBookerIdAndItemIdAndStatusAndEndBefore(Long userId, Long itemId, BookingStatus status, LocalDateTime end);
 
-    @Query("SELECT b FROM Booking b WHERE b.item.owner.id = ?1 AND b.end < ?2 ORDER BY b.start DESC")
-    List<Booking> getAllPastOwner(long bookerId, LocalDateTime now);
-
-    @Query("SELECT b FROM Booking b WHERE b.item.owner.id = ?1 AND b.start > ?2 ORDER BY b.start DESC")
-    List<Booking> getAllFutureOwner(long bookerId, LocalDateTime now);
-
-    @Query("SELECT b FROM Booking b WHERE b.item.owner.id = ?1 AND b.status = ?2 ORDER BY b.start DESC")
-    List<Booking> getAllByStatusOwner(long bookerId, BookingStatus status);
-
-    @Query(value = "SELECT * " +
-            "FROM Bookings b " +
-            "WHERE b.item_id = ?1 " +
-            "AND b.start_date < ?2 " +
-            "ORDER BY b.end_date DESC LIMIT 1 ", nativeQuery = true)
-    List<Booking> getLastForItem(long itemId, LocalDateTime now);
-
-    @Query(value = "SELECT * " +
-            "FROM Bookings b " +
-            "WHERE b.item_id = ?1 " +
-            "AND b.start_date > ?2 " +
-            "AND NOT b.status = 'REJECTED' " +
-            "ORDER BY b.end_date ASC LIMIT 1", nativeQuery = true
-    )
-    List<Booking> getNextForItem(long itemId, LocalDateTime now);
-
-    @Query(
-            "SELECT COUNT (b) FROM Booking b " +
-                    "WHERE b.booker.id = ?1 " +
-                    "AND b.item.id = ?2 " +
-                    "AND b.end < ?3 " +
-                    "AND b.status = ru.practicum.shareit.booking.BookingStatus.APPROVED"
-    )
-    Integer getFinishedCount(long userId, long itemId, LocalDateTime now);
-
-
-    List<Booking> getAllByItemId(long item);
 }
 

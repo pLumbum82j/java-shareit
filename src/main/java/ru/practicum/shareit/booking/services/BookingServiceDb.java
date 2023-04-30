@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingState;
@@ -25,8 +26,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Service
+/**
+ * Класс BookingServiceDb для отработки логики запросов и логирования
+ */
 @Slf4j
+@Service
 public class BookingServiceDb implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
@@ -42,10 +46,13 @@ public class BookingServiceDb implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDto get(Long bookingId, Long userId) {
         userService.get(userId);
         Booking booking = bookingRepository.get(bookingId);
-        if (Objects.equals(booking.getBooker().getId(), userId) || Objects.equals(booking.getItem().getOwner().getId(), userId)) {
+        if (Objects.equals(booking.getBooker().getId(), userId) ||
+                Objects.equals(booking.getItem().getOwner().getId(), userId)) {
+            log.debug("Получен запрос на поиск бронирования по bookingId: {}, userId: {}", bookingId, userId);
             return BookingMapper.toBookingDto(booking);
         } else {
             throw new ObjectAccessDeniedException("Отказано в доступе");
@@ -53,68 +60,67 @@ public class BookingServiceDb implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> getUserBookings(Long userId, String state) {
         BookingState bookingState = checkUserAndBookingState(userId, state);
-        LocalDateTime currentDateTime = LocalDateTime.now();
         List<Booking> bookingList = null;
         switch (bookingState) {
             case ALL:
-                bookingList = bookingRepository.getAll(userId);
-                //bookingList = bookingRepository.findAllByBookerId(userId,sort);
+                bookingList = bookingRepository.findAllByBookerId(userId, sort);
                 break;
             case CURRENT:
-                bookingList = bookingRepository.getAllCurrent(userId, currentDateTime);
-                // bookingList = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(userId, LocalDateTime.now(), LocalDateTime.now(), Sort.by(Sort.Direction.ASC,"start"));
+                bookingList = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(userId,
+                        LocalDateTime.now(), LocalDateTime.now(), sort);
                 break;
             case PAST:
-                bookingList = bookingRepository.getAllPast(userId, currentDateTime);
-                // bookingList = bookingRepository.findAllByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), sort);
+                bookingList = bookingRepository.findAllByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), sort);
                 break;
             case FUTURE:
-                bookingList = bookingRepository.getAllFuture(userId, currentDateTime);
-                // bookingList = bookingRepository.findAllByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), sort);
+                bookingList = bookingRepository.findAllByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), sort);
                 break;
             case WAITING:
-                bookingList = bookingRepository.getAllByStatus(userId, BookingStatus.WAITING);
-                //  bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
+                bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
                 break;
             case REJECTED:
-                bookingList = bookingRepository.getAllByStatus(userId, BookingStatus.REJECTED);
-                //  bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED, sort);
+                bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED, sort);
                 break;
         }
+        log.debug("Получен запрос список бронирования по state: {}, userId: {}", state, userId);
         return bookingList.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> getOwnerBookings(Long ownerId, String state) {
         BookingState bookingState = checkUserAndBookingState(ownerId, state);
-        LocalDateTime currentDateTime = LocalDateTime.now();
         List<Booking> bookingList = null;
         switch (bookingState) {
             case ALL:
-                bookingList = bookingRepository.getAllOwner(ownerId);
+                bookingList = bookingRepository.findAllByItemOwnerId(ownerId, sort);
                 break;
             case CURRENT:
-                bookingList = bookingRepository.getAllCurrentOwner(ownerId, currentDateTime);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId,
+                        LocalDateTime.now(), LocalDateTime.now(), sort);
                 break;
             case PAST:
-                bookingList = bookingRepository.getAllPastOwner(ownerId, currentDateTime);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now(), sort);
                 break;
             case FUTURE:
-                bookingList = bookingRepository.getAllFutureOwner(ownerId, currentDateTime);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now(), sort);
                 break;
             case WAITING:
-                bookingList = bookingRepository.getAllByStatusOwner(ownerId, BookingStatus.WAITING);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, BookingStatus.WAITING, sort);
                 break;
             case REJECTED:
-                bookingList = bookingRepository.getAllByStatusOwner(ownerId, BookingStatus.REJECTED);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, BookingStatus.REJECTED, sort);
                 break;
         }
+        log.debug("Получен запрос список бронирования по state: {}, ownerId: {}", state, ownerId);
         return bookingList.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public BookingDto create(ReceivedBookingDto bookingDto, Long userId) {
         User user = UserMapper.toUser(userService.get(userId));
         Booking booking = BookingMapper.toBooking(bookingDto);
@@ -134,10 +140,12 @@ public class BookingServiceDb implements BookingService {
         booking.setItem(item);
         booking.setBooker(user);
         bookingRepository.save(booking);
+        log.debug("Получен запрос создание бронирования userId: {}, itemId: {}", userId, item.getId());
         return BookingMapper.toBookingDto(booking);
     }
 
     @Override
+    @Transactional
     public BookingDto update(Long bookingId, String approved, Long userId) {
         Booking booking = bookingRepository.get(bookingId);
         if (!Objects.equals(booking.getItem().getOwner().getId(), userId)) {
@@ -151,9 +159,18 @@ public class BookingServiceDb implements BookingService {
         } else {
             booking.setStatus((BookingStatus.REJECTED));
         }
+        log.debug("Получен запрос обновление бронирования bookingId: {}, approved {}, userId: {}",
+                bookingId, approved, userId);
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
+    /**
+     * Метод проверки наличия пользователя в БД и статуса бронирования
+     *
+     * @param id    ID пользователя
+     * @param state Статус
+     * @return Проверенный статус
+     */
     private BookingState checkUserAndBookingState(Long id, String state) {
         userService.get(id);
         BookingState bookingState = BookingState.from(state);

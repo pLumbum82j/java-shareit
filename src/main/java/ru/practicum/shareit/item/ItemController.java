@@ -70,6 +70,14 @@ public class ItemController {
         return itemService.create(userId, itemDto);
     }
 
+    /**
+     * Метод (эндпоинт) создания комментария к вещи
+     *
+     * @param userId     ID пользователя
+     * @param itemId     ID вещи
+     * @param commentDto Объект CommentDto
+     * @return Созданный CommentDto
+     */
     @PostMapping("/{itemId}/comment")
     public CommentDto create(@RequestHeader("X-Sharer-User-Id") long userId,
                              @PathVariable long itemId,
@@ -91,5 +99,4 @@ public class ItemController {
                           @Valid @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
         return itemService.update(userId, itemId, itemDto);
     }
-
 }

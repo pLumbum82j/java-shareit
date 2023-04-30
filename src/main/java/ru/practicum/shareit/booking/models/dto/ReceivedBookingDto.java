@@ -2,13 +2,14 @@ package ru.practicum.shareit.booking.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+/**
+ * Модель объекта Received Booking Data Transfer Object
+ */
+@Data
 @AllArgsConstructor
 public class ReceivedBookingDto {
     private long itemId;

@@ -9,15 +9,15 @@ import ru.practicum.shareit.user.models.User;
 import java.time.LocalDateTime;
 
 /**
- * TODO Sprint add-bookings.
+ * Модель объекта Booking Data Transfer Object
  */
 @Data
 @Builder
 public class BookingDto {
-    private final long id; // — уникальный идентификатор бронирования;
-    private final LocalDateTime start; // — дата и время начала бронирования;
-    private final LocalDateTime end; // — дата и время конца бронирования;
-    private final Item item; // — вещь, которую пользователь бронирует;
-    private final User booker; // — пользователь, который осуществляет бронирование;
-    private final BookingStatus status; // — статус бронирования.
+    private final long id;
+    private final LocalDateTime start;
+    private final LocalDateTime end;
+    private final Item item;
+    private final User booker;
+    private final BookingStatus status;
 }
