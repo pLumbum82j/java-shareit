@@ -1,12 +1,12 @@
 package ru.practicum.shareit.booking.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingMapper;
-import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.mappers.BookingMapper;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.models.Booking;
@@ -17,7 +17,7 @@ import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
 import ru.practicum.shareit.exceptions.UnknownStatusException;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.services.ItemService;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
 
@@ -31,19 +31,14 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BookingServiceDb implements BookingService {
+
     private final BookingRepository bookingRepository;
     private final UserService userService;
     private final ItemService itemService;
     private final Sort sort = Sort.by(Sort.Direction.DESC, "start");
 
-    public BookingServiceDb(BookingRepository bookingRepository,
-                            @Qualifier("userServiceDb") UserService userService,
-                            @Qualifier("itemServiceDb") ItemService itemService) {
-        this.bookingRepository = bookingRepository;
-        this.userService = userService;
-        this.itemService = itemService;
-    }
 
     @Override
     @Transactional(readOnly = true)

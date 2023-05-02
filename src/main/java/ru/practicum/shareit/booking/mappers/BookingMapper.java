@@ -1,6 +1,7 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.mappers;
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;

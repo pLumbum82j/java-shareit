@@ -1,10 +1,10 @@
 package ru.practicum.shareit.item.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
@@ -17,7 +17,7 @@ import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
 
@@ -33,15 +33,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ItemServiceDb implements ItemService {
-    public ItemServiceDb(ItemRepository itemRepository, @Qualifier("userServiceDb") UserService userService,
-                         BookingRepository bookingRepository,
-                         CommentRepository commentRepository) {
-        this.itemRepository = itemRepository;
-        this.userService = userService;
-        this.bookingRepository = bookingRepository;
-        this.commentRepository = commentRepository;
-    }
 
     private final ItemRepository itemRepository;
     private final UserService userService;

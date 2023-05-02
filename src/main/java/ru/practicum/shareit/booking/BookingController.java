@@ -52,7 +52,7 @@ public class BookingController {
      */
     @GetMapping("/owner")
     public List<BookingDto> getOwnerBookings(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state) {
+                                             @RequestParam(name = "state", defaultValue = "ALL") String state) {
         return bookingService.getOwnerBookings(ownerId, state);
     }
 
