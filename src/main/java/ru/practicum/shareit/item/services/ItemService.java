@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.services;
 
+import ru.practicum.shareit.item.models.Item;
+import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 
 import java.util.List;
@@ -27,6 +29,14 @@ public interface ItemService {
     ItemDto get(Long userId, Long itemId);
 
     /**
+     * Получение Item по ID вещи
+     *
+     * @param itemId ID вещи
+     * @return Объект Item
+     */
+    Item getItem(long itemId);
+
+    /**
      * Метод получения списка ItemDto с использованием поиска по тексту и проверкой ID пользователя
      *
      * @param userId ID пользователя
@@ -43,6 +53,16 @@ public interface ItemService {
      * @return Созданный ItemDto
      */
     ItemDto create(Long userId, ItemDto itemDto);
+
+    /**
+     * Метод создания комментария к вещи
+     *
+     * @param commentDto Объект комментария
+     * @param itemId     ID вещи
+     * @param userId     ID пользователя
+     * @return Созданный CommentDto
+     */
+    CommentDto create(CommentDto commentDto, long itemId, long userId);
 
     /**
      * Метод обновления Item

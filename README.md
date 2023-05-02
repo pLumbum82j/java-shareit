@@ -1,2 +1,3 @@
-# java-shareit
-Template repository for Shareit project.
+<H3>Hello. This is my project for the training platform "Yandex Practicum".</H3>
+
+<img src="./src/main/resources/schema.png">

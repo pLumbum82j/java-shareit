@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.services.ItemService;
 
@@ -12,9 +13,10 @@ import java.util.List;
  * Класс ItemController по энпоинту Items
  */
 @RestController
-@RequestMapping("/items")
 @RequiredArgsConstructor
+@RequestMapping("/items")
 public class ItemController {
+
     private final ItemService itemService;
 
     /**
@@ -67,6 +69,22 @@ public class ItemController {
     }
 
     /**
+     * Метод (эндпоинт) создания комментария к вещи
+     *
+     * @param userId     ID пользователя
+     * @param itemId     ID вещи
+     * @param commentDto Объект CommentDto
+     * @return Созданный CommentDto
+     */
+    @PostMapping("/{itemId}/comment")
+    public CommentDto create(@RequestHeader("X-Sharer-User-Id") long userId,
+                             @PathVariable long itemId,
+                             @Valid @RequestBody CommentDto commentDto
+    ) {
+        return itemService.create(commentDto, itemId, userId);
+    }
+
+    /**
      * Метод (эндпоинт) обновления Item
      *
      * @param userId  ID пользователя
@@ -79,5 +97,4 @@ public class ItemController {
                           @Valid @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
         return itemService.update(userId, itemId, itemDto);
     }
-
 }

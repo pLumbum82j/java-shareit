@@ -12,9 +12,10 @@ import java.util.List;
  * Класс UserController по энпоинту Users
  */
 @RestController
-@RequestMapping(path = "/users")
 @RequiredArgsConstructor
+@RequestMapping(path = "/users")
 public class UserController {
+
 
     private final UserService userService;
 
@@ -71,6 +72,4 @@ public class UserController {
     public void delete(@PathVariable Long userId) {
         userService.delete(userId);
     }
-
-
 }

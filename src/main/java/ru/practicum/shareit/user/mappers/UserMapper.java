@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.mappers;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.user.models.User;
@@ -21,7 +21,6 @@ public class UserMapper {
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();
-
     }
 
     /**
@@ -36,6 +35,5 @@ public class UserMapper {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .build();
-
     }
 }
