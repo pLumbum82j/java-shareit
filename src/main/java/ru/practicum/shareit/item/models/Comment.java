@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.user.models.User;
 
 import javax.persistence.*;
@@ -13,7 +10,8 @@ import java.time.LocalDateTime;
 /**
  * Модель объекта Comment
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @AllArgsConstructor

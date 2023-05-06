@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.ConfigConstant;
 import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.services.ItemService;
@@ -26,7 +27,7 @@ public class ItemController {
      * @return Список ItemDto
      */
     @GetMapping()
-    public List<ItemDto> get(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> get(@RequestHeader(ConfigConstant.SHARER) Long userId) {
         return itemService.get(userId);
     }
 
@@ -38,7 +39,7 @@ public class ItemController {
      * @return Объект ItemDto
      */
     @GetMapping("/{itemId}")
-    public ItemDto get(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable Long itemId) {
+    public ItemDto get(@RequestHeader(ConfigConstant.SHARER) long userId, @PathVariable Long itemId) {
         return itemService.get(userId, itemId);
     }
 
@@ -50,7 +51,7 @@ public class ItemController {
      * @return Список ItemDto
      */
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+    public List<ItemDto> search(@RequestHeader(ConfigConstant.SHARER) long userId,
                                 @Valid @RequestParam String text) {
         return itemService.search(userId, text);
     }
@@ -63,7 +64,7 @@ public class ItemController {
      * @return Созданный ItemDto
      */
     @PostMapping()
-    public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+    public ItemDto create(@RequestHeader(ConfigConstant.SHARER) long userId,
                           @Valid @RequestBody ItemDto itemDto) {
         return itemService.create(userId, itemDto);
     }
@@ -77,7 +78,7 @@ public class ItemController {
      * @return Созданный CommentDto
      */
     @PostMapping("/{itemId}/comment")
-    public CommentDto create(@RequestHeader("X-Sharer-User-Id") long userId,
+    public CommentDto create(@RequestHeader(ConfigConstant.SHARER) long userId,
                              @PathVariable long itemId,
                              @Valid @RequestBody CommentDto commentDto
     ) {
@@ -93,7 +94,7 @@ public class ItemController {
      * @return Обновлённый ItemDto
      */
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+    public ItemDto update(@RequestHeader(ConfigConstant.SHARER) long userId,
                           @Valid @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
         return itemService.update(userId, itemId, itemDto);
     }

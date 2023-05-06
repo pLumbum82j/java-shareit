@@ -20,7 +20,8 @@ import java.time.LocalDateTime;
 public class ItemRequest {
     @Id
     @Column(name = "request_id")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NotBlank(message = "Поле name не может быть пустым")
     private String description;
     @ManyToOne

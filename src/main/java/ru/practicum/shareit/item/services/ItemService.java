@@ -73,12 +73,4 @@ public interface ItemService {
      * @return Обновлённый ItemDto
      */
     ItemDto update(Long userId, Long itemId, ItemDto itemDto);
-
-    /**
-     * Метод удаления вещи по её ID
-     *
-     * @param itemId ID вещи
-     */
-    void delete(Long itemId);
-
 }

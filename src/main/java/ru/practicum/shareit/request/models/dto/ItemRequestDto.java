@@ -1,13 +1,14 @@
 package ru.practicum.shareit.request.models.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.user.models.User;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Модель объекта ItemRequest Data Transfer Object
@@ -16,9 +17,10 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class ItemRequestDto {
-   private final int id;
+    private final Long id;
     @NotBlank(message = "Поле name не может быть пустым")
-    private final  String description;
-    private final  User requestor;
-    private final  LocalDateTime created;
+    private final String description;
+    private final User requestor;
+    private final LocalDateTime created;
+    private List<ItemDto> items;
 }

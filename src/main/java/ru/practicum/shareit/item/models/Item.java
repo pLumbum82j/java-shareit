@@ -1,9 +1,8 @@
 package ru.practicum.shareit.item.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import ru.practicum.shareit.request.models.ItemRequest;
 import ru.practicum.shareit.user.models.User;
 
 import javax.persistence.*;
@@ -13,7 +12,8 @@ import javax.validation.constraints.NotNull;
 /**
  * Модель объекта Item
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -36,6 +36,8 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
-    @Column(name = "request_id")
-    private Long request;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "request_id", referencedColumnName = "request_id")
+    private ItemRequest request;
 }

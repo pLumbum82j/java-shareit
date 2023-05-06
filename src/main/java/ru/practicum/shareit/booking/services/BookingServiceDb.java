@@ -5,13 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.mappers.BookingMapper;
-import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.OffsetPageRequest;
 import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.mappers.BookingMapper;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.ObjectAccessDeniedException;
 import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
 import ru.practicum.shareit.exceptions.UnknownStatusException;
@@ -37,8 +38,6 @@ public class BookingServiceDb implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
     private final ItemService itemService;
-    private final Sort sort = Sort.by(Sort.Direction.DESC, "start");
-
 
     @Override
     @Transactional(readOnly = true)
@@ -56,28 +55,29 @@ public class BookingServiceDb implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getUserBookings(Long userId, String state) {
+    public List<BookingDto> getUserBookings(Long userId, String state, Integer from, Integer size) {
         BookingState bookingState = checkUserAndBookingState(userId, state);
         List<Booking> bookingList = null;
+        OffsetPageRequest offsetPageRequest = new OffsetPageRequest(from, size, Sort.by(Sort.Direction.DESC, "start"));
         switch (bookingState) {
             case ALL:
-                bookingList = bookingRepository.findAllByBookerId(userId, sort);
+                bookingList = bookingRepository.findAllByBookerId(userId, offsetPageRequest);
                 break;
             case CURRENT:
                 bookingList = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(userId,
-                        LocalDateTime.now(), LocalDateTime.now(), sort);
+                        LocalDateTime.now(), LocalDateTime.now(), offsetPageRequest);
                 break;
             case PAST:
-                bookingList = bookingRepository.findAllByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), sort);
+                bookingList = bookingRepository.findAllByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), offsetPageRequest);
                 break;
             case FUTURE:
-                bookingList = bookingRepository.findAllByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), sort);
+                bookingList = bookingRepository.findAllByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), offsetPageRequest);
                 break;
             case WAITING:
-                bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
+                bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING, offsetPageRequest);
                 break;
             case REJECTED:
-                bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED, sort);
+                bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED, offsetPageRequest);
                 break;
         }
         log.debug("Получен запрос список бронирования по state: {}, userId: {}", state, userId);
@@ -86,28 +86,29 @@ public class BookingServiceDb implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getOwnerBookings(Long ownerId, String state) {
+    public List<BookingDto> getOwnerBookings(Long ownerId, String state, Integer from, Integer size) {
         BookingState bookingState = checkUserAndBookingState(ownerId, state);
         List<Booking> bookingList = null;
+        OffsetPageRequest offsetPageRequest = new OffsetPageRequest(from, size, Sort.by(Sort.Direction.DESC, "start"));
         switch (bookingState) {
             case ALL:
-                bookingList = bookingRepository.findAllByItemOwnerId(ownerId, sort);
+                bookingList = bookingRepository.findAllByItemOwnerId(ownerId, offsetPageRequest);
                 break;
             case CURRENT:
                 bookingList = bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId,
-                        LocalDateTime.now(), LocalDateTime.now(), sort);
+                        LocalDateTime.now(), LocalDateTime.now(), offsetPageRequest);
                 break;
             case PAST:
-                bookingList = bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now(), sort);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now(), offsetPageRequest);
                 break;
             case FUTURE:
-                bookingList = bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now(), sort);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now(), offsetPageRequest);
                 break;
             case WAITING:
-                bookingList = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, BookingStatus.WAITING, sort);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, BookingStatus.WAITING, offsetPageRequest);
                 break;
             case REJECTED:
-                bookingList = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, BookingStatus.REJECTED, sort);
+                bookingList = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, BookingStatus.REJECTED, offsetPageRequest);
                 break;
         }
         log.debug("Получен запрос список бронирования по state: {}, ownerId: {}", state, ownerId);
