@@ -119,7 +119,8 @@ public class ItemServiceDb implements ItemService {
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
         if (itemDto.getRequestId() != null) {
-            item.setRequest(itemRequestRepository.get(itemDto.getRequestId()));
+            item.setRequest(itemRequestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new ObjectUnknownException("Запрос с ID: " + itemDto.getRequestId() + " не существует")));
         }
         itemRepository.save(item);
         log.debug("Получен запрос на создание Item по userId: {}", userId);

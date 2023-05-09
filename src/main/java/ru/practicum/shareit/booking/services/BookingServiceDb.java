@@ -15,6 +15,7 @@ import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.ObjectAccessDeniedException;
 import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
+import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.exceptions.UnknownStatusException;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.services.ItemService;
@@ -43,7 +44,8 @@ public class BookingServiceDb implements BookingService {
     @Transactional(readOnly = true)
     public BookingDto get(Long bookingId, Long userId) {
         userService.get(userId);
-        Booking booking = bookingRepository.get(bookingId);
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ObjectUnknownException("Бронирование с ID: " + bookingId + " не существует"));
         if (Objects.equals(booking.getBooker().getId(), userId) ||
                 Objects.equals(booking.getItem().getOwner().getId(), userId)) {
             log.debug("Получен запрос на поиск бронирования по bookingId: {}, userId: {}", bookingId, userId);
@@ -143,7 +145,8 @@ public class BookingServiceDb implements BookingService {
     @Override
     @Transactional
     public BookingDto update(Long bookingId, String approved, Long userId) {
-        Booking booking = bookingRepository.get(bookingId);
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ObjectUnknownException("Бронирование с ID: " + bookingId + " не существует"));
         if (!Objects.equals(booking.getItem().getOwner().getId(), userId)) {
             throw new ObjectAccessDeniedException("Пользователь с ID: " + userId + " не имеет доступа к Item");
         }

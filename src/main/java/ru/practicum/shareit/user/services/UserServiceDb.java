@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.models.User;
@@ -33,7 +34,8 @@ public class UserServiceDb implements UserService {
     @Transactional(readOnly = true)
     public UserDto get(Long userId) {
         log.debug("Получен запрос на поиск пользователя по ID: {}", userId);
-        return UserMapper.toUserDto(userRepository.get(userId));
+        return UserMapper.toUserDto(userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectUnknownException("Пользователь с ID: " + userId + " не существует")));
     }
 
     @Override
@@ -47,12 +49,13 @@ public class UserServiceDb implements UserService {
     @Override
     @Transactional
     public UserDto update(Long userId, UserDto userDto) {
-        User userOld = userRepository.get(userId);
+        User userOld = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectUnknownException("Пользователь с ID: " + userId + " не существует"));
         User userTemp = UserMapper.toUser(userDto);
-        if (userTemp.getEmail() != null && !userTemp.getEmail().isEmpty()) {
+        if (userTemp.getEmail() != null && !userTemp.getEmail().isEmpty() && !userTemp.getEmail().equals(userOld.getEmail())) {
             userOld.setEmail(userTemp.getEmail());
         }
-        if (userTemp.getName() != null && !userTemp.getName().isEmpty()) {
+        if (userTemp.getName() != null && !userTemp.getName().isEmpty() && !userTemp.getName().equals(userOld.getName())) {
             userOld.setName(userTemp.getName());
         }
         log.debug("Получен запрос на обновление пользователя с ID: {}", userId);
@@ -62,6 +65,8 @@ public class UserServiceDb implements UserService {
     @Override
     @Transactional
     public void delete(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectUnknownException("Пользователь с ID: " + userId + " не существует"));
         log.debug("Получен запрос на удаления пользователя с ID {}", userId);
         userRepository.deleteById(userId);
     }

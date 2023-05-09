@@ -47,7 +47,7 @@ public class UserController {
      * @return Созданный объект UserDto
      */
     @PostMapping()
-    public UserDto create(@Valid @RequestBody UserDto userDto) {
+    public UserDto create(@RequestBody @Valid UserDto userDto) {
         return userService.create(userDto);
     }
 

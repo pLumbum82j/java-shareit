@@ -17,9 +17,9 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    default Booking get(long id) {
-        return findById(id).orElseThrow(() -> new ObjectUnknownException("Бронирование с ID: " + id + " не существует"));
-    }
+//    default Booking get(long id) {
+//        return findById(id).orElseThrow(() -> new ObjectUnknownException("Бронирование с ID: " + id + " не существует"));
+//    }
 
     List<Booking> findAllByBookerId(Long bookerId, Pageable pageable);
 
