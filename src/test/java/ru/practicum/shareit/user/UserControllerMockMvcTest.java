@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
@@ -66,7 +67,7 @@ class UserControllerMockMvcTest {
         when(userService.get(any())).thenReturn(userDto);
 
         String result = mockMvc.perform(get("/users/{userId}", 1L)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -94,7 +95,7 @@ class UserControllerMockMvcTest {
         when(userService.create(any())).thenReturn(userDto);
 
         String result = mockMvc.perform(post("/users")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -113,7 +114,7 @@ class UserControllerMockMvcTest {
         when(userService.create(any())).thenReturn(wrongUser);
 
         mockMvc.perform(post("/users")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(wrongUser)))
                 .andExpect(status().isBadRequest());
 
@@ -128,7 +129,7 @@ class UserControllerMockMvcTest {
         when(userService.create(any())).thenReturn(wrongUser);
 
         mockMvc.perform(post("/users")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(wrongUser)))
                 .andExpect(status().isBadRequest());
 
@@ -143,7 +144,7 @@ class UserControllerMockMvcTest {
         when(userService.update(userDtoToUpdate.getId(), userDtoToUpdate)).thenReturn(userDtoToUpdate);
 
         String result = mockMvc.perform(patch("/users/{userId}", userDtoToUpdate.getId())
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDtoToUpdate)))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -159,6 +160,7 @@ class UserControllerMockMvcTest {
     void deleteUser_thenReturnStatusOk() {
         mockMvc.perform(delete("/users/{userId}", userDto.getId()))
                 .andExpect(status().isOk());
+
         verify(userService, times(1)).delete(userDto.getId());
     }
 

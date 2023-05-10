@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.ConfigConstant;
@@ -23,14 +24,17 @@ import ru.practicum.shareit.user.models.User;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ItemRequestControllerTest.class)
+@WebMvcTest(ItemRequestController.class)
 @AutoConfigureMockMvc
 class ItemRequestControllerTest {
 
@@ -45,6 +49,7 @@ class ItemRequestControllerTest {
 
     private ItemRequestDto itemRequestDto;
     private ItemRequestDto itemRequestDtoAndListItems;
+    private final String userIdHeader = "X-Sharer-User-Id";
 
     @BeforeEach
     void beforeEach() {
@@ -72,7 +77,7 @@ class ItemRequestControllerTest {
     @Test
     @SneakyThrows
     void testGet() {
-        when(itemRequestService.get(1L)).thenReturn(List.of(itemRequestDto));
+        when(itemRequestService.get(anyLong())).thenReturn(List.of(itemRequestDto));
 
         mockMvc.perform(get("/requests")
                         .header(ConfigConstant.SHARER, 1L)
@@ -94,10 +99,42 @@ class ItemRequestControllerTest {
     }
 
     @Test
+    @SneakyThrows
     void testGet1() {
+        when(itemRequestService.get(anyLong(), any(), any())).thenReturn(List.of(itemRequestDto));
+
+        String result = mockMvc.perform(get("/requests/all")
+                        .header(ConfigConstant.SHARER, 1)
+                        .param("from", "0")
+                        .param("size", "2")
+                        .content(objectMapper.writeValueAsString(itemRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(itemRequestService, times(1)).get(anyLong(), any(), any());
+
     }
 
     @Test
+    @SneakyThrows
     void create() {
+        when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(itemRequestDto);
+
+        String result = mockMvc.perform(post("/requests")
+                        .header(ConfigConstant.SHARER, 1)
+                        .content(objectMapper.writeValueAsString(itemRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(itemRequestService, times(1)).create(anyLong(), any(ItemRequestDto.class));
+        assertEquals(objectMapper.writeValueAsString(itemRequestDto), result);
     }
 }
