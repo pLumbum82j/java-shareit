@@ -18,6 +18,7 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.ObjectAccessDeniedException;
 import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
+import ru.practicum.shareit.exceptions.UnknownStatusException;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.services.ItemService;
 import ru.practicum.shareit.user.mappers.UserMapper;
@@ -162,7 +163,7 @@ class BookingServiceDbTest {
 
     @Test
     void getUserBookings_whenOwnerFoundAndBookingStatusRejected_thenReturnedBookingList() {
-                when(bookingRepository.findAllByItemOwnerIdAndStatus(anyLong(), any(), any(PageRequest.class)))
+        when(bookingRepository.findAllByItemOwnerIdAndStatus(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
         List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), "REJECTED", 1, 1);
@@ -230,6 +231,18 @@ class BookingServiceDbTest {
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
                 .findAllByItemOwnerId(user.getId(), offsetPageRequest);
+    }
+
+    @Test
+    void getUserBookings_whenNotValidStatusBooking_thenReturnedBookingList() {
+       // OffsetPageRequest offsetPageRequest = new OffsetPageRequest(1, 1, Sort.by(Sort.Direction.DESC, "start"));
+        //when(bookingRepository.findAllByItemOwnerId(user.getId(), offsetPageRequest)).thenReturn(List.of(booking));
+
+        UnknownStatusException unknownStatusException  = assertThrows(UnknownStatusException.class,
+                () -> bookingServiceDb.getOwnerBookings(user.getId(), "NOT_VALID", 1, 1));
+
+        assertEquals(unknownStatusException.getMessage(), "Unknown state: NOT_VALID");
+        verify(bookingRepository, never()).findAllByItemOwnerId(anyLong(), any(OffsetPageRequest.class));
     }
 
     @Test

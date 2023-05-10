@@ -8,14 +8,14 @@ import ru.practicum.shareit.request.models.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.util.List;
 
 /**
  * Класс ItemRequestController по энпоинту Requests
  */
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
@@ -43,8 +43,10 @@ public class ItemRequestController {
      */
     @GetMapping("/all")
     public List<ItemRequestDto> get(@RequestHeader(ConfigConstant.SHARER) Long userId,
-                                    @Valid @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                    @Valid @RequestParam(defaultValue = "10") @Positive Integer size) {
+                                   // @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                    @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                    //@RequestParam(defaultValue = "10") @Positive Integer size) {
+                                    @RequestParam(defaultValue = "10") @Min(1) @Max(20) Integer size) {
         return itemRequestService.get(userId, from, size);
     }
 

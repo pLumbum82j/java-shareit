@@ -35,16 +35,16 @@ public class BookingMapper {
      * @param bookingDto Объект BookingDto
      * @return Объект Booking
      */
-    public static Booking toBooking(BookingDto bookingDto) {
-        return Booking.builder()
-                .id(bookingDto.getId())
-                .start(bookingDto.getStart())
-                .end(bookingDto.getEnd())
-                .item(bookingDto.getItem())
-                .booker(bookingDto.getBooker())
-                .status(bookingDto.getStatus() == null ? BookingStatus.WAITING : bookingDto.getStatus())
-                .build();
-    }
+//    public static Booking toBooking(BookingDto bookingDto) {
+//        return Booking.builder()
+//                .id(bookingDto.getId())
+//                .start(bookingDto.getStart())
+//                .end(bookingDto.getEnd())
+//                .item(bookingDto.getItem())
+//                .booker(bookingDto.getBooker())
+//                .status(bookingDto.getStatus() == null ? BookingStatus.WAITING : bookingDto.getStatus())
+//                .build();
+//    }
 
     /**
      * Статический метод преобразования ReceivedBookingDto в Booking
