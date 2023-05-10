@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.ConfigConstant;
 import ru.practicum.shareit.request.models.dto.ItemRequestDto;
@@ -42,8 +43,8 @@ public class ItemRequestController {
      */
     @GetMapping("/all")
     public List<ItemRequestDto> get(@RequestHeader(ConfigConstant.SHARER) Long userId,
-                                    @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                    @RequestParam(defaultValue = "10") @Positive Integer size) {
+                                    @Valid @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                    @Valid @RequestParam(defaultValue = "10") @Positive Integer size) {
         return itemRequestService.get(userId, from, size);
     }
 

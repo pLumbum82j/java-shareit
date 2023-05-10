@@ -47,13 +47,13 @@ class ItemRequestControllerTest {
     @MockBean
     private ItemRequestService itemRequestService;
 
+    private ItemRequest itemRequest;
     private ItemRequestDto itemRequestDto;
     private ItemRequestDto itemRequestDtoAndListItems;
-    private final String userIdHeader = "X-Sharer-User-Id";
 
     @BeforeEach
     void beforeEach() {
-        ItemRequest itemRequest = new ItemRequest(1L, "itemRequestDescription", new User(), LocalDateTime.now());
+        itemRequest = new ItemRequest(1L, "itemRequestDescription", new User(), LocalDateTime.now());
         Item item = new Item(1L, "nameItem", "descriptionItem", true, new User(), new ItemRequest());
         ItemDto itemDto = ItemMapper.toItemDto(item);
         List<ItemDto> itemList = List.of(itemDto);
@@ -62,37 +62,19 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void getAllItemRequest_thenReturnStatusOkAndListItemRequest() {
-//        when(itemRequestService.get()).thenReturn(List.of(userDto));
-//
-//        mockMvc.perform(get("/users"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.[0].id", is(userDto.getId()), Long.class))
-//                .andExpect(jsonPath("$.[0].name", is(userDto.getName())))
-//                .andExpect(jsonPath("$.[0].email", is(userDto.getEmail())));
-//
-//        verify(userService, times(1)).get();
-    }
-
-    @Test
     @SneakyThrows
-    void testGet() {
+    void getItemRequest_whenUserIdValidAndFound_thenReturnedItemRequest() {
         when(itemRequestService.get(anyLong())).thenReturn(List.of(itemRequestDto));
 
         mockMvc.perform(get("/requests")
                         .header(ConfigConstant.SHARER, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        //.contentType("application/json")
                         .content(objectMapper.writeValueAsString(itemRequestDto)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-//                .andExpect(jsonPath("$.[0].id", is(itemRequestDto.getId()), Long.class))
-//                .andExpect(jsonPath("$.[0].description", is(itemRequestDto.getDescription())))
-//                .andExpect(jsonPath("$.[0].reqestor", is(itemRequestDto.getRequestor())))
-//                .andExpect(jsonPath("$.[0].created", is(itemRequestDto.getCreated())));
 
         verify(itemRequestService, times(1)).get(1L);
 
@@ -100,10 +82,10 @@ class ItemRequestControllerTest {
 
     @Test
     @SneakyThrows
-    void testGet1() {
+    void getItemRequest_whenUserIdFoundAndParamValid_thenReturnedItemRequest() {
         when(itemRequestService.get(anyLong(), any(), any())).thenReturn(List.of(itemRequestDto));
 
-        String result = mockMvc.perform(get("/requests/all")
+        mockMvc.perform(get("/requests/all")
                         .header(ConfigConstant.SHARER, 1)
                         .param("from", "0")
                         .param("size", "2")
@@ -116,12 +98,46 @@ class ItemRequestControllerTest {
                 .getContentAsString();
 
         verify(itemRequestService, times(1)).get(anyLong(), any(), any());
-
     }
 
     @Test
     @SneakyThrows
-    void create() {
+    void getItemRequest_whenUserIdFoundAndParamNotValid_thenReturnedItemRequest() {
+     //   when(itemRequestService.get(anyLong(), any(), any())).thenReturn(List.of(itemRequestDto));
+
+        mockMvc.perform(get("/requests/all")
+                        .header(ConfigConstant.SHARER, 1)
+                        .param("from", "0")
+                        .param("size", "-2")
+                       // .content(objectMapper.writeValueAsString(itemRequestDto))
+                       // .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(itemRequestService, never()).get(anyLong(), any(), any());
+    }
+
+    @Test
+    @SneakyThrows
+    void getItemRequest_whenUserIdFoundAndParamNotValid_thenReturnBadRequest() {
+        when(itemRequestService.get(anyLong(), anyLong())).thenReturn(itemRequestDto);
+
+        mockMvc.perform(get("/requests/1")
+                        .header(ConfigConstant.SHARER, 1))
+                        //.content(objectMapper.writeValueAsString(itemRequestDto))
+                       // .contentType(MediaType.APPLICATION_JSON))
+                     //   .accept(MediaType.APPLICATION_JSON))
+                //.andDo(print())
+                .andExpect(status().isBadRequest());
+
+        verify(itemRequestService, times(1)).get(anyLong(), anyLong());
+    }
+
+
+
+    @Test
+    @SneakyThrows
+    void createItemRequest_whenInvoked_thenReturnStatusOkAndItemRequest() {
         when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(itemRequestDto);
 
         String result = mockMvc.perform(post("/requests")
@@ -136,5 +152,22 @@ class ItemRequestControllerTest {
 
         verify(itemRequestService, times(1)).create(anyLong(), any(ItemRequestDto.class));
         assertEquals(objectMapper.writeValueAsString(itemRequestDto), result);
+    }
+
+    @Test
+    @SneakyThrows
+    void createItemRequest_whenItemRequestDtoNotValid_thenReturnBadRequest() {
+        itemRequest.setDescription(null);
+        ItemRequestDto wrongItemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
+
+        when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(wrongItemRequestDto);
+
+        mockMvc.perform(post("/requests")
+                        .header(ConfigConstant.SHARER, 1)
+                        .content(objectMapper.writeValueAsString(wrongItemRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(itemRequestService, never()).create(anyLong(), any(ItemRequestDto.class));
     }
 }
