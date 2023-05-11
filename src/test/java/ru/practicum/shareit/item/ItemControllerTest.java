@@ -20,15 +20,12 @@ import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.services.ItemService;
 import ru.practicum.shareit.request.models.ItemRequest;
-import ru.practicum.shareit.user.UserController;
-import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
-import ru.practicum.shareit.user.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -117,6 +114,7 @@ class ItemControllerTest {
         verify(itemService, times(1)).create(anyLong(), any(ItemDto.class));
 
     }
+
     //Не работает
     @Test
     @SneakyThrows
@@ -141,7 +139,7 @@ class ItemControllerTest {
     void updateItem_whenUserAndItemFound_thenReturnStatusOkAndItem() {
         when(itemService.update(anyLong(), anyLong(), any(ItemDto.class))).thenReturn(itemDto);
 
-        String result = mockMvc.perform(patch("/items/{itemId}",1L)
+        String result = mockMvc.perform(patch("/items/{itemId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(ConfigConstant.SHARER, 1L)
                         .content(objectMapper.writeValueAsString(itemDto)))

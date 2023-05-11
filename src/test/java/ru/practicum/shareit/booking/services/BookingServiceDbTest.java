@@ -235,10 +235,7 @@ class BookingServiceDbTest {
 
     @Test
     void getUserBookings_whenNotValidStatusBooking_thenReturnedBookingList() {
-       // OffsetPageRequest offsetPageRequest = new OffsetPageRequest(1, 1, Sort.by(Sort.Direction.DESC, "start"));
-        //when(bookingRepository.findAllByItemOwnerId(user.getId(), offsetPageRequest)).thenReturn(List.of(booking));
-
-        UnknownStatusException unknownStatusException  = assertThrows(UnknownStatusException.class,
+        UnknownStatusException unknownStatusException = assertThrows(UnknownStatusException.class,
                 () -> bookingServiceDb.getOwnerBookings(user.getId(), "NOT_VALID", 1, 1));
 
         assertEquals(unknownStatusException.getMessage(), "Unknown state: NOT_VALID");

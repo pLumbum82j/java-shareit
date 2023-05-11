@@ -4,8 +4,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -108,7 +106,7 @@ class ItemRequestDbTest {
         when(userService.get(1L)).thenReturn(UserMapper.toUserDto(requestor));
         when(itemRequestRepository.findAllByRequestorIdNot(requestor.getId(), offsetPageRequest)).thenReturn(itemRequestList);
 
-        List<ItemRequestDto> actualItemRequestDto = itemRequestDb.get(requestor.getId(), 1,1);
+        List<ItemRequestDto> actualItemRequestDto = itemRequestDb.get(requestor.getId(), 1, 1);
 
         assertEquals(actualItemRequestDto.size(), itemRequestList.size());
         verify(itemRequestRepository, times(1)).findAllByRequestorIdNot(requestor.getId(), offsetPageRequest);

@@ -7,9 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.mappers.BookingMapper;
 import ru.practicum.shareit.booking.models.Booking;
-import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.item.mappers.CommentMapper;
@@ -29,10 +27,10 @@ import ru.practicum.shareit.user.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -56,7 +54,6 @@ class ItemServiceDbTest {
     private User user;
 
     private Booking booking;
-    private BookingDto bookingDto;
 
     private Item item;
     private Comment comment;
@@ -68,7 +65,6 @@ class ItemServiceDbTest {
         userDto = UserMapper.toUserDto(user);
         item = new Item(1L, "item", "description", true, user, null);
         booking = new Booking(1L, LocalDateTime.now(), LocalDateTime.now(), item, user, BookingStatus.WAITING);
-        bookingDto = BookingMapper.toBookingDto(booking);
         comment = new Comment(1L, "text", item, user, LocalDateTime.now());
         commentDto = CommentMapper.toCommentDto(comment);
     }
@@ -167,9 +163,6 @@ class ItemServiceDbTest {
     //Не работает
     @Test
     void createComment_whenUserAndItemFoundAndCommentValid_thenNotSaved() {
-        //when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.empty());
-        //item.setRequest(new ItemRequest(1L,"text", user, LocalDateTime.now()));
-        //ItemDto itemDto = ItemMapper.toItemDto(item);
         when(userService.get(anyLong())).thenReturn(userDto);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(bookingRepository.findAllByBookerIdAndItemIdAndStatusAndEndBefore(user.getId(), item.getId(),
@@ -177,21 +170,18 @@ class ItemServiceDbTest {
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 
         CommentDto actualCommet = itemServiceDb.create(commentDto, item.getId(), user.getId());
-
-        //assertEquals(actualCommet.getId(), commentDto.getId());
-        //verify(commentRepository, times(1)).save(any(Comment.class));
     }
 
     @Test
-    void updateItem(){
+    void updateItem() {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         when(userService.get(anyLong())).thenReturn(userDto);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(itemRepository.save(item)).thenReturn(item);
 
-        ItemDto actualItemDto = itemServiceDb.update(1L,1L,itemDto);
+        ItemDto actualItemDto = itemServiceDb.update(1L, 1L, itemDto);
 
-        assertEquals(actualItemDto.getId(),itemDto.getId());
+        assertEquals(actualItemDto.getId(), itemDto.getId());
         verify(itemRepository, times(1)).save(item);
 
     }

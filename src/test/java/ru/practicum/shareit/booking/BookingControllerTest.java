@@ -16,18 +16,10 @@ import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;
 import ru.practicum.shareit.booking.services.BookingService;
-import ru.practicum.shareit.item.mappers.ItemMapper;
-import ru.practicum.shareit.item.models.Item;
-import ru.practicum.shareit.item.models.dto.ItemDto;
-import ru.practicum.shareit.request.ItemRequestController;
-import ru.practicum.shareit.request.mappers.ItemRequestMapper;
-import ru.practicum.shareit.request.models.ItemRequest;
-import ru.practicum.shareit.user.models.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -54,13 +46,6 @@ class BookingControllerTest {
     void beforeEach() {
         booking = new Booking();
         bookingDto = BookingMapper.toBookingDto(booking);
-
-//        itemRequest = new ItemRequest(1L, "itemRequestDescription", new User(), LocalDateTime.now());
-//        Item item = new Item(1L, "nameItem", "descriptionItem", true, new User(), new ItemRequest());
-//        ItemDto itemDto = ItemMapper.toItemDto(item);
-//        List<ItemDto> itemList = List.of(itemDto);
-//        itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
-//        itemRequestDtoAndListItems = ItemRequestMapper.toItemRequestDto(itemRequest, itemList);
     }
 
 
@@ -109,7 +94,7 @@ class BookingControllerTest {
     @Test
     @SneakyThrows
     void create() {
-        ReceivedBookingDto receivedBookingDto = new ReceivedBookingDto(1L, LocalDateTime.now().plusMinutes(1),LocalDateTime.now().plusMinutes(2));
+        ReceivedBookingDto receivedBookingDto = new ReceivedBookingDto(1L, LocalDateTime.now().plusMinutes(1), LocalDateTime.now().plusMinutes(2));
         when(bookingService.create(any(ReceivedBookingDto.class), anyLong())).thenReturn(bookingDto);
 
         mockMvc.perform(post("/bookings")
@@ -128,7 +113,7 @@ class BookingControllerTest {
     @Test
     @SneakyThrows
     void update() {
-        when(bookingService.update(anyLong(),anyString(), anyLong())).thenReturn(bookingDto);
+        when(bookingService.update(anyLong(), anyString(), anyLong())).thenReturn(bookingDto);
 
         mockMvc.perform(patch("/bookings/{bookingId}", 1L)
                         .param("approved", "APPROVED")
@@ -136,7 +121,7 @@ class BookingControllerTest {
                         .header(ConfigConstant.SHARER, 1L))
                 .andExpect(status().isOk());
 
-        verify(bookingService, times(1)).update(anyLong(),anyString(), anyLong());
+        verify(bookingService, times(1)).update(anyLong(), anyString(), anyLong());
 
     }
 }
