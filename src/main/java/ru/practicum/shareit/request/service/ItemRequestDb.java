@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemRequestDb implements ItemRequestService {
 
-    final private ItemRequestRepository itemRequestRepository;
-    final private UserService userService;
-    final private ItemRepository itemRepository;
+    private final ItemRequestRepository itemRequestRepository;
+    private final UserService userService;
+    private final ItemRepository itemRepository;
 
     @Override
     @Transactional(readOnly = true)
