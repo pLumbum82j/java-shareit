@@ -72,7 +72,7 @@ public class ItemServiceDb implements ItemService {
     public ItemDto get(Long userId, Long itemId) {
         userService.get(userId);
         List<Comment> comments = commentRepository.findAllByItemIdOrderByCreatedDesc(itemId);
-        Item item = itemRepository.get(itemId);
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ObjectUnknownException("Item с ID: " + itemId + " не существует"));
         Booking lastForItem = null;
         Booking nextForItem = null;
         if (item.getOwner().getId().equals(userId)) {
@@ -95,7 +95,7 @@ public class ItemServiceDb implements ItemService {
     @Transactional(readOnly = true)
     public Item getItem(long itemId) {
         log.debug("Получен запрос на поиск Item по itemId: {}", itemId);
-        return itemRepository.get(itemId);
+        return itemRepository.findById(itemId).orElseThrow(() -> new ObjectUnknownException("Item с ID: " + itemId + " не существует"));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ItemServiceDb implements ItemService {
     @Transactional
     public CommentDto create(CommentDto commentDto, long itemId, long userId) {
         User user = UserMapper.toUser(userService.get(userId));
-        Item item = itemRepository.get(itemId);
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ObjectUnknownException("Item с ID: " + itemId + " не существует"));
         Comment comment = CommentMapper.toComment(commentDto);
         if (bookingRepository.findAllByBookerIdAndItemIdAndStatusAndEndBefore(userId, itemId,
                 BookingStatus.APPROVED, LocalDateTime.now()).isEmpty()) {

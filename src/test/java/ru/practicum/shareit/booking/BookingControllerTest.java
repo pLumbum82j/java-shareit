@@ -44,7 +44,7 @@ class BookingControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    BookingService bookingService;
+    private BookingService bookingService;
 
     Booking booking;
     BookingDto bookingDto;
