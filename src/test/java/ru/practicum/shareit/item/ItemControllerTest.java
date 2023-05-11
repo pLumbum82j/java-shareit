@@ -65,7 +65,7 @@ class ItemControllerTest {
         when(itemService.get(anyLong())).thenReturn(List.of(itemDto));
 
         mockMvc.perform(get("/items")
-                        .header(ConfigConstant.sharer, 1L))
+                        .header(ConfigConstant.SHARER, 1L))
                 .andExpect(status().isOk());
 
         verify(itemService, times(1)).get(anyLong());
@@ -77,7 +77,7 @@ class ItemControllerTest {
         when(itemService.get(anyLong(), anyLong())).thenReturn(itemDto);
 
         mockMvc.perform(get("/items/{itemId}", 1L)
-                        .header(ConfigConstant.sharer, 1L))
+                        .header(ConfigConstant.SHARER, 1L))
                 .andExpect(status().isOk());
 
         verify(itemService, times(1)).get(anyLong(), anyLong());
@@ -89,7 +89,7 @@ class ItemControllerTest {
         when(itemService.search(anyLong(), anyString())).thenReturn(List.of(itemDto));
 
         mockMvc.perform(get("/items/search")
-                        .header(ConfigConstant.sharer, 1L)
+                        .header(ConfigConstant.SHARER, 1L)
                         .param("text", "аккум"))
                 .andExpect(status().isOk());
 
@@ -102,7 +102,7 @@ class ItemControllerTest {
         when(itemService.create(anyLong(), any(ItemDto.class))).thenReturn(itemDto);
 
         mockMvc.perform(post("/items")
-                        .header(ConfigConstant.sharer, 1L)
+                        .header(ConfigConstant.SHARER, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(itemDto)))
@@ -123,7 +123,7 @@ class ItemControllerTest {
 
         String result = mockMvc.perform(post("/items/{itemId}/comment", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ConfigConstant.sharer, 1L)
+                        .header(ConfigConstant.SHARER, 1L)
                         .content(objectMapper.writeValueAsString(commentDto)))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -141,7 +141,7 @@ class ItemControllerTest {
 
         String result = mockMvc.perform(patch("/items/{itemId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ConfigConstant.sharer, 1L)
+                        .header(ConfigConstant.SHARER, 1L)
                         .content(objectMapper.writeValueAsString(itemDto)))
                 .andExpect(status().isOk())
                 .andReturn()

@@ -8,6 +8,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ConfigConstant {
 
-    public final String sharer = "X-Sharer-User-Id";
+    public static final String SHARER = "X-Sharer-User-Id";
 
 }

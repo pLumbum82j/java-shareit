@@ -62,7 +62,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.get(anyLong())).thenReturn(List.of(itemRequestDto));
 
         mockMvc.perform(get("/requests")
-                        .header(ConfigConstant.sharer, 1L)
+                        .header(ConfigConstant.SHARER, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(itemRequestDto)))
@@ -81,7 +81,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.get(anyLong(), any(), any())).thenReturn(List.of(itemRequestDto));
 
         mockMvc.perform(get("/requests/all")
-                        .header(ConfigConstant.sharer, 1)
+                        .header(ConfigConstant.SHARER, 1)
                         .param("from", "0")
                         .param("size", "2")
                         .content(objectMapper.writeValueAsString(itemRequestDto))
@@ -118,7 +118,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.get(anyLong(), anyLong())).thenReturn(itemRequestDto);
 
         mockMvc.perform(get("/requests/1")
-                        .header(ConfigConstant.sharer, 1))
+                        .header(ConfigConstant.SHARER, 1))
                 //.content(objectMapper.writeValueAsString(itemRequestDto))
                 // .contentType(MediaType.APPLICATION_JSON))
                 //   .accept(MediaType.APPLICATION_JSON))
@@ -135,7 +135,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(itemRequestDto);
 
         String result = mockMvc.perform(post("/requests")
-                        .header(ConfigConstant.sharer, 1)
+                        .header(ConfigConstant.SHARER, 1)
                         .content(objectMapper.writeValueAsString(itemRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -157,7 +157,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(wrongItemRequestDto);
 
         mockMvc.perform(post("/requests")
-                        .header(ConfigConstant.sharer, 1)
+                        .header(ConfigConstant.SHARER, 1)
                         .content(objectMapper.writeValueAsString(wrongItemRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());

@@ -30,7 +30,7 @@ public class BookingController {
      */
     @GetMapping("/{bookingId}")
     public BookingDto get(@PathVariable long bookingId,
-                          @RequestHeader(ConfigConstant.sharer) long userId) {
+                          @RequestHeader(ConfigConstant.SHARER) long userId) {
         return bookingService.get(bookingId, userId);
     }
 
@@ -44,7 +44,7 @@ public class BookingController {
      * @return Список объектов BookingDto
      */
     @GetMapping()
-    public List<BookingDto> getUserBookings(@RequestHeader(ConfigConstant.sharer) long userId,
+    public List<BookingDto> getUserBookings(@RequestHeader(ConfigConstant.SHARER) long userId,
                                             @RequestParam(value = "state", defaultValue = "ALL") String state,
                                             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
@@ -61,7 +61,7 @@ public class BookingController {
      * @return Список объектов BookingDto
      */
     @GetMapping("/owner")
-    public List<BookingDto> getOwnerBookings(@RequestHeader(ConfigConstant.sharer) long ownerId,
+    public List<BookingDto> getOwnerBookings(@RequestHeader(ConfigConstant.SHARER) long ownerId,
                                              @RequestParam(name = "state", defaultValue = "ALL") String state,
                                              @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                              @RequestParam(defaultValue = "10") @Positive Integer size) {
@@ -77,7 +77,7 @@ public class BookingController {
      */
     @PostMapping()
     public BookingDto create(@RequestBody ReceivedBookingDto bookingDto,
-                             @RequestHeader(ConfigConstant.sharer) long userId) {
+                             @RequestHeader(ConfigConstant.SHARER) long userId) {
         return bookingService.create(bookingDto, userId);
     }
 
@@ -92,7 +92,7 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public BookingDto update(@PathVariable long bookingId,
                              @RequestParam("approved") String approved,
-                             @RequestHeader(ConfigConstant.sharer) long userId) {
+                             @RequestHeader(ConfigConstant.SHARER) long userId) {
         return bookingService.update(bookingId, approved.toLowerCase(), userId);
     }
 }

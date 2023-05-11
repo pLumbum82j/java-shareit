@@ -29,7 +29,7 @@ public class ItemRequestController {
      * @return Список объектов ItemRequestDto
      */
     @GetMapping()
-    public List<ItemRequestDto> get(@RequestHeader(ConfigConstant.sharer) Long userId) {
+    public List<ItemRequestDto> get(@RequestHeader(ConfigConstant.SHARER) Long userId) {
         return itemRequestService.get(userId);
     }
 
@@ -42,7 +42,7 @@ public class ItemRequestController {
      * @return Список объектов ItemRequestDto
      */
     @GetMapping("/all")
-    public List<ItemRequestDto> get(@RequestHeader(ConfigConstant.sharer) Long userId,
+    public List<ItemRequestDto> get(@RequestHeader(ConfigConstant.SHARER) Long userId,
                                     @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                     @RequestParam(defaultValue = "10") @Positive Integer size) {
         return itemRequestService.get(userId, from, size);
@@ -56,7 +56,7 @@ public class ItemRequestController {
      * @return Объект ItemRequestDto
      */
     @GetMapping("/{requestId}")
-    public ItemRequestDto get(@RequestHeader(ConfigConstant.sharer) long userId, @PathVariable Long requestId) {
+    public ItemRequestDto get(@RequestHeader(ConfigConstant.SHARER) long userId, @PathVariable Long requestId) {
         return itemRequestService.get(userId, requestId);
     }
 
@@ -68,7 +68,7 @@ public class ItemRequestController {
      * @return Созданный объект itemRequestDto
      */
     @PostMapping()
-    public ItemRequestDto create(@RequestHeader(ConfigConstant.sharer) long userId,
+    public ItemRequestDto create(@RequestHeader(ConfigConstant.SHARER) long userId,
                                  @Valid @RequestBody ItemRequestDto itemRequestDto) {
         return itemRequestService.create(userId, itemRequestDto);
     }
