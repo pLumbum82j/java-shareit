@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.OffsetPageRequest;
+import ru.practicum.shareit.util.OffsetPageRequest;
 import ru.practicum.shareit.item.mappers.ItemMapper;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.models.dto.ItemDto;

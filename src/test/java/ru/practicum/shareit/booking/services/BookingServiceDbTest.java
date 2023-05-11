@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.OffsetPageRequest;
+import ru.practicum.shareit.util.OffsetPageRequest;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.mappers.BookingMapper;
 import ru.practicum.shareit.booking.models.Booking;
