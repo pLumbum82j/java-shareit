@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.models.Booking;
-import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.item.models.Item;
 
 import java.time.LocalDateTime;
@@ -16,10 +15,6 @@ import java.util.List;
  */
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-
-//    default Booking get(long id) {
-//        return findById(id).orElseThrow(() -> new ObjectUnknownException("Бронирование с ID: " + id + " не существует"));
-//    }
 
     List<Booking> findAllByBookerId(Long bookerId, Pageable pageable);
 

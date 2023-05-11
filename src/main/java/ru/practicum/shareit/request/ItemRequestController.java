@@ -43,10 +43,8 @@ public class ItemRequestController {
      */
     @GetMapping("/all")
     public List<ItemRequestDto> get(@RequestHeader(ConfigConstant.SHARER) Long userId,
-                                   // @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                    @RequestParam(defaultValue = "0") @Min(0) Integer from,
-                                    //@RequestParam(defaultValue = "10") @Positive Integer size) {
-                                    @RequestParam(defaultValue = "10") @Min(1) @Max(20) Integer size) {
+                                    @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                    @RequestParam(defaultValue = "10") @Positive Integer size) {
         return itemRequestService.get(userId, from, size);
     }
 

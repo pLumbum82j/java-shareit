@@ -96,6 +96,17 @@ class ItemServiceDbTest {
     }
 
     @Test
+    void getItem_whenUserAndItemFoundAndValid_thenReturnedItem() {
+        when(userService.get(anyLong())).thenReturn(userDto);
+        when(commentRepository.findAllByItemIdOrderByCreatedDesc(anyLong())).thenReturn(List.of(comment));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+
+        ItemDto actualItem = itemServiceDb.get(user.getId(), item.getId());
+
+        verify(itemRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
     void getItem_whenItemFound_thenReturnedItem() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
@@ -153,6 +164,7 @@ class ItemServiceDbTest {
         verify(itemRepository, never()).save(any(Item.class));
     }
 
+    //Не работает
     @Test
     void createComment_whenUserAndItemFoundAndCommentValid_thenNotSaved() {
         //when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -168,6 +180,20 @@ class ItemServiceDbTest {
 
         //assertEquals(actualCommet.getId(), commentDto.getId());
         //verify(commentRepository, times(1)).save(any(Comment.class));
+    }
+
+    @Test
+    void updateItem(){
+        ItemDto itemDto = ItemMapper.toItemDto(item);
+        when(userService.get(anyLong())).thenReturn(userDto);
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(itemRepository.save(item)).thenReturn(item);
+
+        ItemDto actualItemDto = itemServiceDb.update(1L,1L,itemDto);
+
+        assertEquals(actualItemDto.getId(),itemDto.getId());
+        verify(itemRepository, times(1)).save(item);
+
     }
 
 }

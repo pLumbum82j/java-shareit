@@ -14,10 +14,6 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-//    default Item get(long id) {
-//        return findById(id).orElseThrow(() -> new ObjectUnknownException("Item с ID: " + id + " не существует"));
-//    }
-
     List<Item> findAllByOwnerIdOrderByIdAsc(Long userId);
 
     List<Item> findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(String name, String description);

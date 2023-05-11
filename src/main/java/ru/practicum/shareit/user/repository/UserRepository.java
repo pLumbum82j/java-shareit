@@ -10,7 +10,4 @@ import ru.practicum.shareit.user.models.User;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-//    default User get(long id) {
-//        return findById(id).orElseThrow(() -> new ObjectUnknownException("Пользователь с ID: " + id + " не существует"));
-//    }
 }
