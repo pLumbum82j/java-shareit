@@ -25,4 +25,16 @@ class UserDtoTest {
         assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo(userDto.getName());
         assertThat(result).extractingJsonPathStringValue("$.email").isEqualTo(userDto.getEmail());
     }
+    @Test
+    @SneakyThrows
+    void testDeserialize() {
+        String content = "{\"id\":\"1\",\"name\":\"User1\",\"email\":\"user1@yandex.ru\"}";
+        assertThat(this.json.parse(content))
+                .isEqualTo(new UserDto(1L, "User1","user1@yandex.ru"));
+        assertThat(this.json.parseObject(content).getId()).isEqualTo(1L);
+        assertThat(this.json.parseObject(content).getName()).isEqualTo("User1");
+        assertThat(this.json.parseObject(content).getEmail()).isEqualTo("user1@yandex.ru");
+    }
+
+
 }
