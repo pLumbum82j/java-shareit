@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.util.ConfigConstant;
+import ru.practicum.shareit.util.WebUserName;
 import ru.practicum.shareit.item.mappers.ItemMapper;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.models.dto.ItemDto;
@@ -62,7 +62,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.get(anyLong())).thenReturn(List.of(itemRequestDto));
 
         mockMvc.perform(get("/requests")
-                        .header(ConfigConstant.SHARER, 1L)
+                        .header(WebUserName.SHARER, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(itemRequestDto)))
@@ -81,7 +81,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.get(anyLong(), any(), any())).thenReturn(List.of(itemRequestDto));
 
         mockMvc.perform(get("/requests/all")
-                        .header(ConfigConstant.SHARER, 1)
+                        .header(WebUserName.SHARER, 1)
                         .param("from", "0")
                         .param("size", "2")
                         .content(objectMapper.writeValueAsString(itemRequestDto))
@@ -118,7 +118,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.get(anyLong(), anyLong())).thenReturn(itemRequestDto);
 
         mockMvc.perform(get("/requests/1")
-                        .header(ConfigConstant.SHARER, 1))
+                        .header(WebUserName.SHARER, 1))
                 //.content(objectMapper.writeValueAsString(itemRequestDto))
                 // .contentType(MediaType.APPLICATION_JSON))
                 //   .accept(MediaType.APPLICATION_JSON))
@@ -135,7 +135,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(itemRequestDto);
 
         String result = mockMvc.perform(post("/requests")
-                        .header(ConfigConstant.SHARER, 1)
+                        .header(WebUserName.SHARER, 1)
                         .content(objectMapper.writeValueAsString(itemRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -157,7 +157,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(wrongItemRequestDto);
 
         mockMvc.perform(post("/requests")
-                        .header(ConfigConstant.SHARER, 1)
+                        .header(WebUserName.SHARER, 1)
                         .content(objectMapper.writeValueAsString(wrongItemRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());

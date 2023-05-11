@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
  * Класс констант
  */
 @UtilityClass
-public class ConfigConstant {
+public class WebUserName {
 
     public final String SHARER = "X-Sharer-User-Id";
 

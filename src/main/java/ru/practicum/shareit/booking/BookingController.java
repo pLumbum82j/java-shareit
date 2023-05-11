@@ -2,7 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.util.ConfigConstant;
+import ru.practicum.shareit.util.WebUserName;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;
 import ru.practicum.shareit.booking.services.BookingService;
@@ -30,7 +30,7 @@ public class BookingController {
      */
     @GetMapping("/{bookingId}")
     public BookingDto get(@PathVariable long bookingId,
-                          @RequestHeader(ConfigConstant.SHARER) long userId) {
+                          @RequestHeader(WebUserName.SHARER) long userId) {
         return bookingService.get(bookingId, userId);
     }
 
@@ -44,7 +44,7 @@ public class BookingController {
      * @return Список объектов BookingDto
      */
     @GetMapping()
-    public List<BookingDto> getUserBookings(@RequestHeader(ConfigConstant.SHARER) long userId,
+    public List<BookingDto> getUserBookings(@RequestHeader(WebUserName.SHARER) long userId,
                                             @RequestParam(value = "state", defaultValue = "ALL") String state,
                                             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
@@ -61,7 +61,7 @@ public class BookingController {
      * @return Список объектов BookingDto
      */
     @GetMapping("/owner")
-    public List<BookingDto> getOwnerBookings(@RequestHeader(ConfigConstant.SHARER) long ownerId,
+    public List<BookingDto> getOwnerBookings(@RequestHeader(WebUserName.SHARER) long ownerId,
                                              @RequestParam(name = "state", defaultValue = "ALL") String state,
                                              @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                              @RequestParam(defaultValue = "10") @Positive Integer size) {
@@ -77,7 +77,7 @@ public class BookingController {
      */
     @PostMapping()
     public BookingDto create(@RequestBody ReceivedBookingDto bookingDto,
-                             @RequestHeader(ConfigConstant.SHARER) long userId) {
+                             @RequestHeader(WebUserName.SHARER) long userId) {
         return bookingService.create(bookingDto, userId);
     }
 
@@ -92,7 +92,7 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public BookingDto update(@PathVariable long bookingId,
                              @RequestParam("approved") String approved,
-                             @RequestHeader(ConfigConstant.SHARER) long userId) {
+                             @RequestHeader(WebUserName.SHARER) long userId) {
         return bookingService.update(bookingId, approved.toLowerCase(), userId);
     }
 }

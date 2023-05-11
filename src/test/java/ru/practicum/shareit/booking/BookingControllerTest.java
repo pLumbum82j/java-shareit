@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.util.ConfigConstant;
+import ru.practicum.shareit.util.WebUserName;
 import ru.practicum.shareit.booking.mappers.BookingMapper;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
@@ -56,7 +56,7 @@ class BookingControllerTest {
 
         mockMvc.perform(get("/bookings/{bookingId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ConfigConstant.SHARER, 1L))
+                        .header(WebUserName.SHARER, 1L))
                 .andExpect(status().isOk());
 
         verify(bookingService, times(1)).get(anyLong(), anyLong());
@@ -70,7 +70,7 @@ class BookingControllerTest {
 
         mockMvc.perform(get("/bookings")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ConfigConstant.SHARER, 1L)
+                        .header(WebUserName.SHARER, 1L)
                         .param("state", "ALL"))
                 .andExpect(status().isOk());
 
@@ -84,7 +84,7 @@ class BookingControllerTest {
 
         mockMvc.perform(get("/bookings/owner")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ConfigConstant.SHARER, 1L)
+                        .header(WebUserName.SHARER, 1L)
                         .param("state", "ALL"))
                 .andExpect(status().isOk());
 
@@ -98,7 +98,7 @@ class BookingControllerTest {
         when(bookingService.create(any(ReceivedBookingDto.class), anyLong())).thenReturn(bookingDto);
 
         mockMvc.perform(post("/bookings")
-                        .header(ConfigConstant.SHARER, 1L)
+                        .header(WebUserName.SHARER, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(receivedBookingDto)))
@@ -118,7 +118,7 @@ class BookingControllerTest {
         mockMvc.perform(patch("/bookings/{bookingId}", 1L)
                         .param("approved", "APPROVED")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ConfigConstant.SHARER, 1L))
+                        .header(WebUserName.SHARER, 1L))
                 .andExpect(status().isOk());
 
         verify(bookingService, times(1)).update(anyLong(), anyString(), anyLong());
