@@ -78,6 +78,7 @@ class ItemServiceDbTest {
 
         List<ItemDto> actualItem = itemServiceDb.get(user.getId());
 
+        assertEquals(actualItem.size(), 1);
         verify(itemRepository, times(2)).findAllByOwnerIdOrderByIdAsc(booking.getId());
     }
 
@@ -89,6 +90,7 @@ class ItemServiceDbTest {
 
         List<ItemDto> actualItem = itemServiceDb.get(user.getId());
 
+        assertEquals(actualItem.size(), 1);
         verify(itemRepository, times(2)).findAllByOwnerIdOrderByIdAsc(booking.getId());
     }
 
@@ -100,6 +102,7 @@ class ItemServiceDbTest {
 
         ItemDto actualItem = itemServiceDb.get(user.getId(), item.getId());
 
+        assertEquals(actualItem.getId(), item.getId());
         verify(itemRepository, times(1)).findById(anyLong());
     }
 
@@ -115,13 +118,15 @@ class ItemServiceDbTest {
 
     @Test
     void getItem_whenTextFound_thenReturnedItem() {
-        when(itemRepository.findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString())).thenReturn(List.of(item));
+        when(itemRepository.findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(),
+                anyString())).thenReturn(List.of(item));
         when(userService.get(anyLong())).thenReturn(userDto);
 
         List<ItemDto> actualItem = itemServiceDb.search(anyLong(), "text");
 
         assertEquals(actualItem.get(0).getId(), item.getId());
-        verify(itemRepository, times(1)).findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString());
+        verify(itemRepository, times(1))
+                .findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString());
     }
 
     @Test
@@ -160,7 +165,6 @@ class ItemServiceDbTest {
         verify(itemRepository, never()).save(any(Item.class));
     }
 
-    //Не работает
     @Test
     void createComment_whenUserAndItemFoundAndCommentValid_thenNotSaved() {
         List<Booking> booking1 = List.of(booking);
@@ -172,13 +176,12 @@ class ItemServiceDbTest {
 
         CommentDto actualCommet = itemServiceDb.create(commentDto, item.getId(), user.getId());
 
+        assertEquals(actualCommet.getId(), comment.getId());
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
 
-    //Не работает2
     @Test
     void createComment_whenUserAndItemFoundAndCommentNotValid_thenNotSaved() {
-        List<Booking> booking1 = List.of(booking);
         when(userService.get(anyLong())).thenReturn(userDto);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(bookingRepository.findAllByBookerIdAndItemIdAndStatusAndEndBefore(any(), any(),
@@ -205,5 +208,4 @@ class ItemServiceDbTest {
         verify(itemRepository, times(1)).save(item);
 
     }
-
 }

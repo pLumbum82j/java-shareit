@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.util.ConfigConstant;
 import ru.practicum.shareit.item.mappers.CommentMapper;
 import ru.practicum.shareit.item.mappers.ItemMapper;
 import ru.practicum.shareit.item.models.Comment;
@@ -21,6 +20,7 @@ import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.services.ItemService;
 import ru.practicum.shareit.request.models.ItemRequest;
 import ru.practicum.shareit.user.models.User;
+import ru.practicum.shareit.util.ConfigConstant;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,17 +45,15 @@ class ItemControllerTest {
     @MockBean
     private ItemService itemService;
 
-    private Item item;
     private ItemDto itemDto;
 
-    private Comment comment;
     private CommentDto commentDto;
 
     @BeforeEach
     void beforeEach() {
-        item = new Item(1L, "ItemName", "description", true, new User(), new ItemRequest());
+        Item item = new Item(1L, "ItemName", "description", true, new User(), new ItemRequest());
         itemDto = ItemMapper.toItemDto(item);
-        comment = new Comment(1L, "text", item, new User(), LocalDateTime.now());
+        Comment comment = new Comment(1L, "text", item, new User(), LocalDateTime.now());
         commentDto = CommentMapper.toCommentDto(comment);
     }
 
@@ -115,7 +113,6 @@ class ItemControllerTest {
 
     }
 
-    //Не работает
     @Test
     @SneakyThrows
     void createComment_whenInvoked_thenReturnStatusOkAndItem() {

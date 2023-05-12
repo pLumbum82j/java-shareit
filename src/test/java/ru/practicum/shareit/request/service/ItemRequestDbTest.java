@@ -8,10 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.util.OffsetPageRequest;
-import ru.practicum.shareit.item.mappers.ItemMapper;
-import ru.practicum.shareit.item.models.Item;
-import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.mappers.ItemRequestMapper;
 import ru.practicum.shareit.request.models.ItemRequest;
@@ -20,6 +16,7 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
+import ru.practicum.shareit.util.OffsetPageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,9 +40,7 @@ class ItemRequestDbTest {
     private ItemRequestDb itemRequestDb;
 
     private ItemRequestDto itemRequestDto;
-    private ItemRequestDto itemRequestDtoAndListItems;
     private ItemRequest itemRequest;
-    private Item item;
     User requestor;
     User owner;
 
@@ -54,11 +49,7 @@ class ItemRequestDbTest {
         requestor = new User(1L, "name", "requestor@yandex.ru");
         owner = new User(2L, "name", "owner@yandex.ru");
         itemRequest = new ItemRequest(1L, "itemRequestDescription", requestor, LocalDateTime.now());
-        item = new Item(1L, "nameItem", "descriptionItem", true, owner, new ItemRequest());
-        ItemDto itemDto = ItemMapper.toItemDto(item);
-        List<ItemDto> itemList = List.of(itemDto);
         itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
-        itemRequestDtoAndListItems = ItemRequestMapper.toItemRequestDto(itemRequest, itemList);
     }
 
     @Test

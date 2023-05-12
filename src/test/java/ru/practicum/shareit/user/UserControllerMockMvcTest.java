@@ -47,7 +47,6 @@ class UserControllerMockMvcTest {
 
     @Test
     @SneakyThrows
-        //Есть вопросы как проверить список (кол-во юзеров в нём)
     void getAllUsers_thenReturnStatusOkAndListUsers() {
         when(userService.get()).thenReturn(List.of(userDto));
 
@@ -75,17 +74,6 @@ class UserControllerMockMvcTest {
 
         verify(userService, times(1)).get(any());
         assertEquals(objectMapper.writeValueAsString(userDto), result);
-    }
-
-    @Test
-    @SneakyThrows
-    void getOnlyOneUser_whenUserNotFound_thenReturnBadRequest() {
-//        when(userService.get(any())).thenThrow(ObjectNotFoundException.class);
-//
-//        mockMvc.perform(get("/users/{userId}", 3L))
-//                .andExpect(status().isBadRequest());
-//
-//        verify(userService, never()).get(3L);
     }
 
     @Test
@@ -162,5 +150,4 @@ class UserControllerMockMvcTest {
 
         verify(userService, times(1)).delete(userDto.getId());
     }
-
 }

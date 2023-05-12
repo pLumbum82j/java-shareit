@@ -10,15 +10,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.util.ConfigConstant;
-import ru.practicum.shareit.item.mappers.ItemMapper;
-import ru.practicum.shareit.item.models.Item;
-import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.request.mappers.ItemRequestMapper;
 import ru.practicum.shareit.request.models.ItemRequest;
 import ru.practicum.shareit.request.models.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.models.User;
+import ru.practicum.shareit.util.ConfigConstant;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,16 +41,11 @@ class ItemRequestControllerTest {
 
     private ItemRequest itemRequest;
     private ItemRequestDto itemRequestDto;
-    private ItemRequestDto itemRequestDtoAndListItems;
 
     @BeforeEach
     void beforeEach() {
         itemRequest = new ItemRequest(1L, "itemRequestDescription", new User(), LocalDateTime.now());
-        Item item = new Item(1L, "nameItem", "descriptionItem", true, new User(), new ItemRequest());
-        ItemDto itemDto = ItemMapper.toItemDto(item);
-        List<ItemDto> itemList = List.of(itemDto);
         itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
-        itemRequestDtoAndListItems = ItemRequestMapper.toItemRequestDto(itemRequest, itemList);
     }
 
     @Test
@@ -94,23 +86,6 @@ class ItemRequestControllerTest {
 
         verify(itemRequestService, times(1)).get(anyLong(), any(), any());
     }
-
-//    @Test
-//    @SneakyThrows
-//    void getItemRequest_whenUserIdFoundAndParamNotValid_thenReturnedItemRequest() {
-//     //   when(itemRequestService.get(anyLong(), any(), any())).thenReturn(List.of(itemRequestDto));
-//
-//        mockMvc.perform(get("/requests/all")
-//                        .header(ConfigConstant.SHARER, -1)
-//                        .param("from", "0")
-//                        .param("size", "-2")
-//                       // .content(objectMapper.writeValueAsString(itemRequestDto))
-//                       // .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//
-//        verify(itemRequestService, never()).get(anyLong(), any(), any());
-//    }
 
     @Test
     @SneakyThrows
