@@ -26,6 +26,7 @@ class UserDtoTest {
         assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo(userDto.getName());
         assertThat(result).extractingJsonPathStringValue("$.email").isEqualTo(userDto.getEmail());
     }
+
     @Test
     @SneakyThrows
     void testDeserialize() {
