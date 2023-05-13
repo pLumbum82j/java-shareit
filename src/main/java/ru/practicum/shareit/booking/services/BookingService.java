@@ -23,18 +23,22 @@ public interface BookingService {
      *
      * @param userId ID пользователя
      * @param state  Статус
+     * @param from   индекс первого элемента
+     * @param size   количество элементов для отображения
      * @return Список объектов BookingDto
      */
-    List<BookingDto> getUserBookings(Long userId, String state);
+    List<BookingDto> getUserBookings(Long userId, String state, Integer from, Integer size);
 
     /**
      * Метод получения списка BookingDto по ownerId и state
      *
      * @param ownerId ID владельца
      * @param state   Статус
+     * @param from    индекс первого элемента
+     * @param size    количество элементов для отображения
      * @return Список объектов BookingDto
      */
-    List<BookingDto> getOwnerBookings(Long ownerId, String state);
+    List<BookingDto> getOwnerBookings(Long ownerId, String state, Integer from, Integer size);
 
     /**
      * Метод создания объекта Booking
@@ -54,5 +58,4 @@ public interface BookingService {
      * @return Обновлённый объект BookingDto
      */
     BookingDto update(Long bookingId, String approved, Long userId);
-
 }

@@ -1,7 +1,8 @@
 package ru.practicum.shareit.item.models.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -9,7 +10,8 @@ import java.time.LocalDateTime;
 /**
  * Модель объекта Comment Data Transfer Object
  */
-@Data
+@Getter
+@Setter
 @Builder
 public class CommentDto {
 

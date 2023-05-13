@@ -24,13 +24,16 @@ public class ItemMapper {
      * @return Объект ItemDto
      */
     public static ItemDto toItemDto(Item item) {
-        return ItemDto.builder()
+        ItemDto dto = ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .request(item.getRequest() != null ? item.getRequest() : null)
                 .build();
+        if (item.getRequest() != null) {
+            dto.setRequestId(item.getRequest().getId());
+        }
+        return dto;
     }
 
     /**
@@ -48,9 +51,11 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .request(item.getRequest() != null ? item.getRequest() : null)
                 .comments(comments == null ? new ArrayList<>() : comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()))
                 .build();
+        if (item.getRequest() != null) {
+            dto.setRequestId(item.getRequest().getId());
+        }
         if (last != null) {
             dto.setLastBooking(new BookingShortDto(last.getId(), last.getBooker().getId()));
         }

@@ -30,23 +30,6 @@ public class BookingMapper {
     }
 
     /**
-     * Статический метод преобразования Booking в BookingDto
-     *
-     * @param bookingDto Объект BookingDto
-     * @return Объект Booking
-     */
-    public static Booking toBooking(BookingDto bookingDto) {
-        return Booking.builder()
-                .id(bookingDto.getId())
-                .start(bookingDto.getStart())
-                .end(bookingDto.getEnd())
-                .item(bookingDto.getItem())
-                .booker(bookingDto.getBooker())
-                .status(bookingDto.getStatus() == null ? BookingStatus.WAITING : bookingDto.getStatus())
-                .build();
-    }
-
-    /**
      * Статический метод преобразования ReceivedBookingDto в Booking
      *
      * @param bookingDto Объект ReceivedBookingDto

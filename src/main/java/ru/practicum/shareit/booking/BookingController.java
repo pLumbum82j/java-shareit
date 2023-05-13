@@ -2,10 +2,13 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.util.ConfigConstant;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;
 import ru.practicum.shareit.booking.services.BookingService;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -15,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 public class BookingController {
+
     private final BookingService bookingService;
 
     /**
@@ -26,7 +30,7 @@ public class BookingController {
      */
     @GetMapping("/{bookingId}")
     public BookingDto get(@PathVariable long bookingId,
-                          @RequestHeader("X-Sharer-User-Id") long userId) {
+                          @RequestHeader(ConfigConstant.SHARER) long userId) {
         return bookingService.get(bookingId, userId);
     }
 
@@ -35,12 +39,16 @@ public class BookingController {
      *
      * @param userId ID пользователя
      * @param state  Статус
+     * @param from   индекс первого элемента
+     * @param size   количество элементов для отображения
      * @return Список объектов BookingDto
      */
     @GetMapping()
-    public List<BookingDto> getUserBookings(@RequestHeader("X-Sharer-User-Id") long userId,
-                                            @RequestParam(value = "state", defaultValue = "ALL") String state) {
-        return bookingService.getUserBookings(userId, state);
+    public List<BookingDto> getUserBookings(@RequestHeader(ConfigConstant.SHARER) long userId,
+                                            @RequestParam(value = "state", defaultValue = "ALL") String state,
+                                            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                            @RequestParam(defaultValue = "10") @Positive Integer size) {
+        return bookingService.getUserBookings(userId, state, from, size);
     }
 
     /**
@@ -48,12 +56,16 @@ public class BookingController {
      *
      * @param ownerId ID владельца
      * @param state   Статус
+     * @param from    индекс первого элемента
+     * @param size    количество элементов для отображения
      * @return Список объектов BookingDto
      */
     @GetMapping("/owner")
-    public List<BookingDto> getOwnerBookings(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                             @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        return bookingService.getOwnerBookings(ownerId, state);
+    public List<BookingDto> getOwnerBookings(@RequestHeader(ConfigConstant.SHARER) long ownerId,
+                                             @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
+        return bookingService.getOwnerBookings(ownerId, state, from, size);
     }
 
     /**
@@ -65,7 +77,7 @@ public class BookingController {
      */
     @PostMapping()
     public BookingDto create(@RequestBody ReceivedBookingDto bookingDto,
-                             @RequestHeader("X-Sharer-User-Id") long userId) {
+                             @RequestHeader(ConfigConstant.SHARER) long userId) {
         return bookingService.create(bookingDto, userId);
     }
 
@@ -79,8 +91,8 @@ public class BookingController {
      */
     @PatchMapping("/{bookingId}")
     public BookingDto update(@PathVariable long bookingId,
-                             @RequestParam(value = "approved") String approved,
-                             @RequestHeader("X-Sharer-User-Id") long userId) {
+                             @RequestParam("approved") String approved,
+                             @RequestHeader(ConfigConstant.SHARER) long userId) {
         return bookingService.update(bookingId, approved.toLowerCase(), userId);
     }
 }

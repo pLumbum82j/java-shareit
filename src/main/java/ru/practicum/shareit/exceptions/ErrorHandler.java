@@ -19,11 +19,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler
-    public ResponseEntity<String> handleAlreadyExist(final ObjectAlreadyExistsException e) {
-        log.warn("Ошибка, Запрашиваемый объект уже существует.");
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
     @ExceptionHandler
     public ResponseEntity<String> handleMethodArgumentNotValid(final MethodArgumentNotValidException e) {
