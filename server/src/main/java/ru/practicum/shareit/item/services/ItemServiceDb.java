@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -21,6 +23,7 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
+import ru.practicum.shareit.util.OffsetPageRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -100,14 +103,15 @@ public class ItemServiceDb implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> search(Long userId, String text) {
+    public List<ItemDto> search(Long userId, String text, Integer from, Integer size) {
+        OffsetPageRequest offsetPageRequest = new OffsetPageRequest(from, size);
         UserMapper.toUser(userService.get(userId));
         if (text.isEmpty() || text.isBlank()) {
             log.debug("Получен запрос на список ItemDto по text: {} - ничего не найдено", text);
             return new ArrayList<>();
         } else {
             log.debug("Получен запрос на список ItemDto по text: {} - найдены совпадения по тексту", text);
-            return itemRepository.findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text)
+            return itemRepository.findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text, offsetPageRequest)
                     .stream().map(ItemMapper::toItemDto).filter(ItemDto::getAvailable).collect(Collectors.toList());
         }
     }

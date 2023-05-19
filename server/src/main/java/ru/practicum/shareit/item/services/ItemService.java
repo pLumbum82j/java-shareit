@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.services;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
@@ -43,7 +44,7 @@ public interface ItemService {
      * @param text   Текст поиска
      * @return Список ItemDto
      */
-    List<ItemDto> search(Long userId, String text);
+    List<ItemDto> search(Long userId, String text, Integer from, Integer size);
 
     /**
      * Метод создания Item

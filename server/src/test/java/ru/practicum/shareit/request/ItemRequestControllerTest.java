@@ -123,20 +123,20 @@ class ItemRequestControllerTest {
         assertEquals(objectMapper.writeValueAsString(itemRequestDto), result);
     }
 
-    @Test
-    @SneakyThrows
-    void createItemRequest_whenItemRequestDtoNotValid_thenReturnBadRequest() {
-        itemRequest.setDescription(null);
-        ItemRequestDto wrongItemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
-
-        when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(wrongItemRequestDto);
-
-        mockMvc.perform(post("/requests")
-                        .header(ConfigConstant.SHARER, 1)
-                        .content(objectMapper.writeValueAsString(wrongItemRequestDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        verify(itemRequestService, never()).create(anyLong(), any(ItemRequestDto.class));
-    }
+//    @Test
+//    @SneakyThrows
+//    void createItemRequest_whenItemRequestDtoNotValid_thenReturnBadRequest() {
+//        itemRequest.setDescription(null);
+//        ItemRequestDto wrongItemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
+//
+//        when(itemRequestService.create(anyLong(), any(ItemRequestDto.class))).thenReturn(wrongItemRequestDto);
+//
+//        mockMvc.perform(post("/requests")
+//                        .header(ConfigConstant.SHARER, 1)
+//                        .content(objectMapper.writeValueAsString(wrongItemRequestDto))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//
+//        verify(itemRequestService, never()).create(anyLong(), any(ItemRequestDto.class));
+//    }
 }

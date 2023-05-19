@@ -1,11 +1,13 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.util.ConfigConstant;
 import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.services.ItemService;
+import ru.practicum.shareit.util.OffsetPageRequest;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -52,8 +54,10 @@ public class ItemController {
      */
     @GetMapping("/search")
     public List<ItemDto> search(@RequestHeader(ConfigConstant.SHARER) long userId,
-                                @Valid @RequestParam String text) {
-        return itemService.search(userId, text);
+                                @RequestParam String text,
+                                @RequestParam(defaultValue = "0") Integer from,
+                                @RequestParam(defaultValue = "10") Integer size) {
+        return itemService.search(userId, text, from, size);
     }
 
     /**

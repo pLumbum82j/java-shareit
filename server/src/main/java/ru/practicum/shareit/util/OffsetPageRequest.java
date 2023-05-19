@@ -14,6 +14,11 @@ public class OffsetPageRequest extends PageRequest {
         this.from = from;
     }
 
+    public OffsetPageRequest(int page, int size) {
+        super(page, size, Sort.unsorted());
+        this.from = page;
+    }
+
     @Override
     public long getOffset() {
         return from;

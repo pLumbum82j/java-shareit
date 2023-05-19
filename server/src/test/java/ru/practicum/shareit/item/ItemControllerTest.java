@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.mappers.CommentMapper;
@@ -21,6 +22,7 @@ import ru.practicum.shareit.item.services.ItemService;
 import ru.practicum.shareit.request.models.ItemRequest;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.util.ConfigConstant;
+import ru.practicum.shareit.util.OffsetPageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -84,14 +86,14 @@ class ItemControllerTest {
     @Test
     @SneakyThrows
     void getItemList_whenUserAndTextFound_thenReturnedItemList() {
-        when(itemService.search(anyLong(), anyString())).thenReturn(List.of(itemDto));
+        when(itemService.search(anyLong(), anyString(), anyInt(),anyInt())).thenReturn(List.of(itemDto));
 
         mockMvc.perform(get("/items/search")
                         .header(ConfigConstant.SHARER, 1L)
                         .param("text", "аккум"))
                 .andExpect(status().isOk());
 
-        verify(itemService, times(1)).search(anyLong(), anyString());
+        verify(itemService, times(1)).search(anyLong(), anyString(), anyInt(),anyInt());
     }
 
     @Test

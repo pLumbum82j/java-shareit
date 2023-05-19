@@ -3,7 +3,6 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -14,7 +13,6 @@ import javax.validation.Valid;
  * Класс UserController по энпоинту Users
  */
 @RestController
-@Controller
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 @Slf4j
@@ -24,15 +22,16 @@ public class UserController {
 
     private final UserClient userClient;
 
-//    /**
-//     * Метод (эндпоинт) получения списка всех пользователей
-//     *
-//     * @return Список UserDto
-//     */
-//    @GetMapping()
-//    public List<UserDto> get() {
-//        return userService.get();
-//    }
+    /**
+     * Метод (эндпоинт) получения списка всех пользователей
+     *
+     * @return Список UserDto
+     */
+    @GetMapping()
+    public ResponseEntity<Object> getAllUsers() {
+        log.info("Get all users");
+        return userClient.get();
+    }
 
     /**
      * Метод (эндпоинт) получения объекта UserDto по ID пользователя
@@ -43,7 +42,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getUser(@PathVariable Long userId) {
         log.info("Get user {}", userId);
-        return userClient.getUser(userId);
+        return userClient.get(userId);
     }
 
     /**
@@ -58,26 +57,28 @@ public class UserController {
         return userClient.createUser(userDto);
 
     }
-//
-//    /**
-//     * Метод (эндпоинт) обновления User по ID пользователя
-//     *
-//     * @param userId  ID пользователя
-//     * @param userDto Объект UserDto
-//     * @return Обновлённый объект UserDto
-//     */
-//    @PatchMapping("/{userId}")
-//    public UserDto update(@PathVariable Long userId, @RequestBody UserDto userDto) {
-//        return userService.update(userId, userDto);
-//    }
-//
-//    /**
-//     * Метод (эндпоинт) удаления объекта User
-//     *
-//     * @param userId ID пользователя
-//     */
-//    @DeleteMapping("/{userId}")
-//    public void delete(@PathVariable Long userId) {
-//        userService.delete(userId);
-//    }
+
+    /**
+     * Метод (эндпоинт) обновления User по ID пользователя
+     *
+     * @param userId  ID пользователя
+     * @param userDto Объект UserDto
+     * @return Обновлённый объект UserDto
+     */
+    @PatchMapping(path = "/{userId}")
+    public ResponseEntity<Object> update(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
+        log.info("Update user with id={},", userDto.getId());
+        return userClient.update(userId, userDto);
+    }
+
+    /**
+     * Метод (эндпоинт) удаления объекта User
+     *
+     * @param userId ID пользователя
+     */
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Object> delete(@PathVariable Long userId) {
+        log.info("Delete user with id={}", userId);
+        return userClient.delete(userId);
+    }
 }
