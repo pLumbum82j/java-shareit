@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.util.OffsetPageRequest;
 import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.mappers.BookingMapper;
@@ -16,12 +15,12 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.ObjectAccessDeniedException;
 import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
-import ru.practicum.shareit.exceptions.UnknownStatusException;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.services.ItemService;
 import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
+import ru.practicum.shareit.util.OffsetPageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,8 +56,9 @@ public class BookingServiceDb implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getUserBookings(Long userId, String state, Integer from, Integer size) {
-        BookingState bookingState = checkUserAndBookingState(userId, state);
+    public List<BookingDto> getUserBookings(Long userId, BookingState bookingState, Integer from, Integer size) {
+        userService.get(userId);
+        //BookingState bookingState = checkUserAndBookingState(userId, state);
         List<Booking> bookingList = null;
         OffsetPageRequest offsetPageRequest = new OffsetPageRequest(from, size, Sort.by(Sort.Direction.DESC, "start"));
         switch (bookingState) {
@@ -82,14 +82,15 @@ public class BookingServiceDb implements BookingService {
                 bookingList = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED, offsetPageRequest);
                 break;
         }
-        log.debug("Получен запрос список бронирования по state: {}, userId: {}", state, userId);
+        log.debug("Получен запрос список бронирования по state: {}, userId: {}", bookingState.name(), userId);
         return bookingList.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDto> getOwnerBookings(Long ownerId, String state, Integer from, Integer size) {
-        BookingState bookingState = checkUserAndBookingState(ownerId, state);
+    public List<BookingDto> getOwnerBookings(Long ownerId, BookingState bookingState, Integer from, Integer size) {
+        userService.get(ownerId);
+        //BookingState bookingState = checkUserAndBookingState(ownerId, state);
         List<Booking> bookingList = null;
         OffsetPageRequest offsetPageRequest = new OffsetPageRequest(from, size, Sort.by(Sort.Direction.DESC, "start"));
         switch (bookingState) {
@@ -113,7 +114,7 @@ public class BookingServiceDb implements BookingService {
                 bookingList = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId, BookingStatus.REJECTED, offsetPageRequest);
                 break;
         }
-        log.debug("Получен запрос список бронирования по state: {}, ownerId: {}", state, ownerId);
+        log.debug("Получен запрос список бронирования по state: {}, ownerId: {}", bookingState.name(), ownerId);
         return bookingList.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
@@ -163,19 +164,19 @@ public class BookingServiceDb implements BookingService {
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
-    /**
-     * Метод проверки наличия пользователя в БД и статуса бронирования
-     *
-     * @param id    ID пользователя
-     * @param state Статус
-     * @return Проверенный статус
-     */
-    private BookingState checkUserAndBookingState(Long id, String state) {
-        userService.get(id);
-        BookingState bookingState = BookingState.from(state);
-        if (bookingState == null) {
-            throw new UnknownStatusException("Unknown state: " + state);
-        }
-        return bookingState;
-    }
+//    /**
+//     * Метод проверки наличия пользователя в БД и статуса бронирования
+//     *
+//     * @param id    ID пользователя
+//     * @param state Статус
+//     * @return Проверенный статус
+//     */
+//    private BookingState checkUserAndBookingState(Long id, String state) {
+//        userService.get(id);
+//        BookingState bookingState = BookingState.from(state);
+//        if (bookingState == null) {
+//            throw new UnknownStatusException("Unknown state: " + state);
+//        }
+//        return bookingState;
+//    }
 }

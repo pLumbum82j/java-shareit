@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.mappers.BookingMapper;
 import ru.practicum.shareit.booking.models.Booking;
@@ -17,7 +18,6 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.ObjectAccessDeniedException;
 import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
-import ru.practicum.shareit.exceptions.UnknownStatusException;
 import ru.practicum.shareit.item.models.Item;
 import ru.practicum.shareit.item.services.ItemService;
 import ru.practicum.shareit.user.mappers.UserMapper;
@@ -94,7 +94,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByBookerIdAndStatus(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), "REJECTED", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), BookingState.REJECTED, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -106,7 +106,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByBookerIdAndStatus(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), "WAITING", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), BookingState.WAITING, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -118,7 +118,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByBookerIdAndStartIsAfter(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), "FUTURE", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), BookingState.FUTURE, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -130,7 +130,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByBookerIdAndEndIsBefore(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), "PAST", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), BookingState.PAST, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -142,7 +142,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(anyLong(), any(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), "CURRENT", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), BookingState.CURRENT, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -154,7 +154,7 @@ class BookingServiceDbTest {
         OffsetPageRequest offsetPageRequest = new OffsetPageRequest(1, 1, Sort.by(Sort.Direction.DESC, "start"));
         when(bookingRepository.findAllByBookerId(user.getId(), offsetPageRequest)).thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), "ALL", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getUserBookings(user.getId(), BookingState.ALL, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -166,7 +166,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByItemOwnerIdAndStatus(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), "REJECTED", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), BookingState.REJECTED, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -178,7 +178,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByItemOwnerIdAndStatus(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), "WAITING", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), BookingState.WAITING, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -190,7 +190,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByItemOwnerIdAndStartIsAfter(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), "FUTURE", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), BookingState.FUTURE, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -202,7 +202,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByItemOwnerIdAndEndIsBefore(anyLong(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), "PAST", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), BookingState.PAST, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -214,7 +214,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(anyLong(), any(), any(), any(PageRequest.class)))
                 .thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), "CURRENT", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), BookingState.CURRENT, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
@@ -226,21 +226,13 @@ class BookingServiceDbTest {
         OffsetPageRequest offsetPageRequest = new OffsetPageRequest(1, 1, Sort.by(Sort.Direction.DESC, "start"));
         when(bookingRepository.findAllByItemOwnerId(user.getId(), offsetPageRequest)).thenReturn(List.of(booking));
 
-        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), "ALL", 1, 1);
+        List<BookingDto> actualBooking = bookingServiceDb.getOwnerBookings(user.getId(), BookingState.ALL, 1, 1);
 
         assertEquals(actualBooking.get(0).getId(), booking.getId());
         verify(bookingRepository, times(1))
                 .findAllByItemOwnerId(user.getId(), offsetPageRequest);
     }
 
-    @Test
-    void getUserBookings_whenNotValidStatusBooking_thenReturnedBookingList() {
-        UnknownStatusException unknownStatusException = assertThrows(UnknownStatusException.class,
-                () -> bookingServiceDb.getOwnerBookings(user.getId(), "NOT_VALID", 1, 1));
-
-        assertEquals(unknownStatusException.getMessage(), "Unknown state: NOT_VALID");
-        verify(bookingRepository, never()).findAllByItemOwnerId(anyLong(), any(OffsetPageRequest.class));
-    }
 
     @Test
     void createBooking_whenNewUserAndNewBookingValid_thenSavedBooking() {

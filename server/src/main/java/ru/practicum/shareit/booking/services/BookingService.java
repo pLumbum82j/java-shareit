@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.services;
 
+import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;
 
@@ -27,7 +28,7 @@ public interface BookingService {
      * @param size   количество элементов для отображения
      * @return Список объектов BookingDto
      */
-    List<BookingDto> getUserBookings(Long userId, String state, Integer from, Integer size);
+    List<BookingDto> getUserBookings(Long userId, BookingState state, Integer from, Integer size);
 
     /**
      * Метод получения списка BookingDto по ownerId и state
@@ -38,7 +39,7 @@ public interface BookingService {
      * @param size    количество элементов для отображения
      * @return Список объектов BookingDto
      */
-    List<BookingDto> getOwnerBookings(Long ownerId, String state, Integer from, Integer size);
+    List<BookingDto> getOwnerBookings(Long ownerId, BookingState state, Integer from, Integer size);
 
     /**
      * Метод создания объекта Booking

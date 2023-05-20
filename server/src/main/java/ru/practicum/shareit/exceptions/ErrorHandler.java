@@ -20,32 +20,32 @@ import java.util.Map;
 public class ErrorHandler {
 
 
-    @ExceptionHandler
-    public ResponseEntity<String> handleMethodArgumentNotValid(final MethodArgumentNotValidException e) {
-        log.warn("Ошибка валидации.");
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
+//    @ExceptionHandler
+//    public ResponseEntity<String> handleMethodArgumentNotValid(final MethodArgumentNotValidException e) {
+//        log.warn("Ошибка валидации.");
+//        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//    }
+//
     @ExceptionHandler
     public ResponseEntity<String> handleObjectAvailabilityDeny(final ObjectAvailabilityDenyException e) {
         log.warn("Ошибка, объект недоступен.");
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = {UnknownStatusException.class})
-    public ErrorMessage handleUnknownStatus(Exception exception, WebRequest request) {
-        ErrorMessage error = new ErrorMessage(
-                new Date(),
-                HttpStatus.BAD_REQUEST.value(),
-                exception.getMessage()
-        );
-        log.warn("Ошибка запроса {}: {} {}",
-                HttpStatus.BAD_REQUEST.value(),
-                exception.getMessage(),
-                request.getDescription(false));
-        return error;
-    }
+//
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(value = {UnknownStatusException.class})
+//    public ErrorMessage handleUnknownStatus(Exception exception, WebRequest request) {
+//        ErrorMessage error = new ErrorMessage(
+//                new Date(),
+//                HttpStatus.BAD_REQUEST.value(),
+//                exception.getMessage()
+//        );
+//        log.warn("Ошибка запроса {}: {} {}",
+//                HttpStatus.BAD_REQUEST.value(),
+//                exception.getMessage(),
+//                request.getDescription(false));
+//        return error;
+//    }
 
     @ExceptionHandler
     public ResponseEntity<String> handleObjectUnknown(final ObjectUnknownException e) {

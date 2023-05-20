@@ -66,7 +66,7 @@ class BookingControllerTest {
     @Test
     @SneakyThrows
     void getUserBookings() {
-        when(bookingService.getUserBookings(anyLong(), anyString(), any(), any())).thenReturn(List.of(bookingDto));
+        when(bookingService.getUserBookings(anyLong(), any(BookingState.class), any(), any())).thenReturn(List.of(bookingDto));
 
         mockMvc.perform(get("/bookings")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,13 +74,13 @@ class BookingControllerTest {
                         .param("state", "ALL"))
                 .andExpect(status().isOk());
 
-        verify(bookingService, times(1)).getUserBookings(anyLong(), anyString(), any(), any());
+        verify(bookingService, times(1)).getUserBookings(anyLong(), any(BookingState.class), any(), any());
     }
 
     @Test
     @SneakyThrows
     void getOwnerBookings() {
-        when(bookingService.getOwnerBookings(anyLong(), anyString(), any(), any())).thenReturn(List.of(bookingDto));
+        when(bookingService.getOwnerBookings(anyLong(), any(BookingState.class), any(), any())).thenReturn(List.of(bookingDto));
 
         mockMvc.perform(get("/bookings/owner")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +88,7 @@ class BookingControllerTest {
                         .param("state", "ALL"))
                 .andExpect(status().isOk());
 
-        verify(bookingService, times(1)).getOwnerBookings(anyLong(), anyString(), any(), any());
+        verify(bookingService, times(1)).getOwnerBookings(anyLong(), any(BookingState.class), any(), any());
     }
 
     @Test
