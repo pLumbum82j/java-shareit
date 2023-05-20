@@ -42,6 +42,8 @@ public interface ItemService {
      *
      * @param userId ID пользователя
      * @param text   Текст поиска
+     * @param from    индекс первого элемента
+     * @param size    количество элементов для отображения
      * @return Список ItemDto
      */
     List<ItemDto> search(Long userId, String text, Integer from, Integer size);

@@ -1,13 +1,11 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.util.ConfigConstant;
 import ru.practicum.shareit.item.models.dto.CommentDto;
 import ru.practicum.shareit.item.models.dto.ItemDto;
 import ru.practicum.shareit.item.services.ItemService;
-import ru.practicum.shareit.util.OffsetPageRequest;
+import ru.practicum.shareit.util.ConfigConstant;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -69,7 +67,7 @@ public class ItemController {
      */
     @PostMapping()
     public ItemDto create(@RequestHeader(ConfigConstant.SHARER) long userId,
-                          @Valid @RequestBody ItemDto itemDto) {
+                          @RequestBody ItemDto itemDto) {
         return itemService.create(userId, itemDto);
     }
 
@@ -84,7 +82,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto create(@RequestHeader(ConfigConstant.SHARER) long userId,
                              @PathVariable long itemId,
-                             @Valid @RequestBody CommentDto commentDto
+                             @RequestBody CommentDto commentDto
     ) {
         return itemService.create(commentDto, itemId, userId);
     }

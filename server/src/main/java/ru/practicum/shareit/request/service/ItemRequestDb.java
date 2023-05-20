@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.util.OffsetPageRequest;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.item.mappers.ItemMapper;
 import ru.practicum.shareit.item.models.Item;
@@ -17,6 +16,7 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.services.UserService;
+import ru.practicum.shareit.util.OffsetPageRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class ItemRequestDb implements ItemRequestService {
     public List<ItemRequestDto> get(Long userId) {
         userService.get(userId);
         List<ItemRequest> list = itemRequestRepository.findAllByRequestorIdOrderByCreatedDesc(userId);
-
+        log.debug("Получен запрос на список itemRequest по userId: {}", userId);
         return setItemsToItemRequestAndTransformToDto(list);
     }
 
@@ -49,6 +49,7 @@ public class ItemRequestDb implements ItemRequestService {
         userService.get(userId);
         OffsetPageRequest offsetPageRequest = new OffsetPageRequest(from, size, Sort.by(Sort.Direction.ASC, "created"));
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdNot(userId, offsetPageRequest);
+        log.debug("Получен запрос на список itemRequest по userId: {}, size: {}, from: {}", userId, size, from);
         return setItemsToItemRequestAndTransformToDto(itemRequests);
     }
 
@@ -59,6 +60,7 @@ public class ItemRequestDb implements ItemRequestService {
         List<ItemRequest> itemRequestList = Collections.singletonList(itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new ObjectUnknownException("Запрос с ID: " + requestId + " не существует")));
         List<ItemRequestDto> itemRequestDtoList = setItemsToItemRequestAndTransformToDto(itemRequestList);
+        log.debug("Получен запрос на получение itemRequest по userId: {}", userId);
         return itemRequestDtoList.isEmpty() ? null : itemRequestDtoList.get(0);
 
     }

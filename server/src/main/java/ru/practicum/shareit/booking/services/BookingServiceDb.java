@@ -144,7 +144,7 @@ public class BookingServiceDb implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto update(Long bookingId, String approved, Long userId) {
+    public BookingDto update(Long bookingId, boolean approved, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ObjectUnknownException("Бронирование с ID: " + bookingId + " не существует"));
         if (!Objects.equals(booking.getItem().getOwner().getId(), userId)) {
@@ -153,7 +153,7 @@ public class BookingServiceDb implements BookingService {
         if (Objects.equals(booking.getStatus(), BookingStatus.APPROVED)) {
             throw new ObjectAvailabilityDenyException("Статус бронирования уже установлен: " + booking.getStatus());
         }
-        if (approved.equals("true")) {
+        if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
         } else {
             booking.setStatus((BookingStatus.REJECTED));

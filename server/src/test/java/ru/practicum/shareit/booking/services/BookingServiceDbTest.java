@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.util.OffsetPageRequest;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.mappers.BookingMapper;
 import ru.practicum.shareit.booking.models.Booking;
@@ -25,6 +24,7 @@ import ru.practicum.shareit.user.mappers.UserMapper;
 import ru.practicum.shareit.user.models.User;
 import ru.practicum.shareit.user.models.dto.UserDto;
 import ru.practicum.shareit.user.services.UserService;
+import ru.practicum.shareit.util.OffsetPageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -304,7 +304,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(any())).thenReturn(Optional.of(booking));
         when(bookingRepository.save(booking)).thenReturn(booking);
 
-        bookingServiceDb.update(booking.getId(), "true", user.getId());
+        bookingServiceDb.update(booking.getId(), true, user.getId());
 
         verify(bookingRepository, times(1)).save(any(Booking.class));
     }
@@ -314,7 +314,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(any())).thenReturn(Optional.of(booking));
         when(bookingRepository.save(booking)).thenReturn(booking);
 
-        bookingServiceDb.update(booking.getId(), "false", user.getId());
+        bookingServiceDb.update(booking.getId(), false, user.getId());
 
         verify(bookingRepository, times(1)).save(any(Booking.class));
     }
@@ -325,7 +325,7 @@ class BookingServiceDbTest {
         booking.setStatus(BookingStatus.APPROVED);
 
         ObjectAvailabilityDenyException objectAvailabilityDenyException = assertThrows(ObjectAvailabilityDenyException.class,
-                () -> bookingServiceDb.update(booking.getId(), "true", user.getId()));
+                () -> bookingServiceDb.update(booking.getId(), true, user.getId()));
 
         assertEquals(objectAvailabilityDenyException.getMessage(), "Статус бронирования уже установлен: APPROVED");
         verify(bookingRepository, never()).save(any(Booking.class));
@@ -336,7 +336,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(any())).thenReturn(Optional.empty());
 
         ObjectUnknownException objectUnknownException = assertThrows(ObjectUnknownException.class,
-                () -> bookingServiceDb.update(booking.getId(), "true", user.getId()));
+                () -> bookingServiceDb.update(booking.getId(), true, user.getId()));
 
         assertEquals(objectUnknownException.getMessage(), "Бронирование с ID: " + booking.getId() + " не существует");
         verify(bookingRepository, never()).save(any(Booking.class));
@@ -347,7 +347,7 @@ class BookingServiceDbTest {
         when(bookingRepository.findById(any())).thenReturn(Optional.of(booking));
 
         ObjectAccessDeniedException objectAccessDeniedException = assertThrows(ObjectAccessDeniedException.class,
-                () -> bookingServiceDb.update(booking.getId(), "true", 33L));
+                () -> bookingServiceDb.update(booking.getId(), true, 33L));
 
         assertEquals(objectAccessDeniedException.getMessage(), "Пользователь с ID: 33 не имеет доступа к Item");
         verify(bookingRepository, never()).save(any(Booking.class));

@@ -57,5 +57,5 @@ public interface BookingService {
      * @param userId    ID пользователя
      * @return Обновлённый объект BookingDto
      */
-    BookingDto update(Long bookingId, String approved, Long userId);
+    BookingDto update(Long bookingId, boolean approved, Long userId);
 }

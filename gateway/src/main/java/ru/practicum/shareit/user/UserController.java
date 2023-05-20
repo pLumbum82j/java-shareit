@@ -1,9 +1,8 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -12,11 +11,9 @@ import javax.validation.Valid;
 /**
  * Класс UserController по энпоинту Users
  */
-@RestController
-@RequestMapping(path = "/users")
+@Controller
 @RequiredArgsConstructor
-@Slf4j
-@Validated
+@RequestMapping(path = "/users")
 public class UserController {
 
 
@@ -28,8 +25,7 @@ public class UserController {
      * @return Список UserDto
      */
     @GetMapping()
-    public ResponseEntity<Object> getAllUsers() {
-        log.info("Get all users");
+    public ResponseEntity<Object> get() {
         return userClient.get();
     }
 
@@ -40,8 +36,7 @@ public class UserController {
      * @return Объект UserDto
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<Object> getUser(@PathVariable Long userId) {
-        log.info("Get user {}", userId);
+    public ResponseEntity<Object> get(@PathVariable Long userId) {
         return userClient.get(userId);
     }
 
@@ -52,9 +47,8 @@ public class UserController {
      * @return Созданный объект UserDto
      */
     @PostMapping()
-    public ResponseEntity<Object> createUser(@RequestBody @Valid UserDto userDto) {
-        log.info("Creating booking {}", userDto);
-        return userClient.createUser(userDto);
+    public ResponseEntity<Object> create(@RequestBody @Valid UserDto userDto) {
+        return userClient.create(userDto);
 
     }
 
@@ -67,7 +61,6 @@ public class UserController {
      */
     @PatchMapping(path = "/{userId}")
     public ResponseEntity<Object> update(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
-        log.info("Update user with id={},", userDto.getId());
         return userClient.update(userId, userDto);
     }
 
@@ -78,7 +71,6 @@ public class UserController {
      */
     @DeleteMapping("/{userId}")
     public ResponseEntity<Object> delete(@PathVariable Long userId) {
-        log.info("Delete user with id={}", userId);
         return userClient.delete(userId);
     }
 }

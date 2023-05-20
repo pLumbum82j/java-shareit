@@ -1,9 +1,8 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
@@ -11,14 +10,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-@Slf4j
-@Validated
-@RestController
+import static ru.practicum.shareit.ConfigConstant.SHARER;
+
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/requests")
 public class ItemRequestController {
-    private RequestClient requestClient;
-    private static final String SHARER = "X-Sharer-User-Id";
+
+    private final RequestClient requestClient;
 
     /**
      * Метод (эндпоинт) получения списка запросов по пользователю
@@ -28,7 +27,6 @@ public class ItemRequestController {
      */
     @GetMapping()
     public ResponseEntity<Object> get(@RequestHeader(SHARER) Long userId) {
-        log.info("Get itemRequest by userId={}", userId);
         return requestClient.get(userId);
     }
 
@@ -44,7 +42,6 @@ public class ItemRequestController {
     public ResponseEntity<Object> get(@RequestHeader(SHARER) Long userId,
                                       @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                       @RequestParam(defaultValue = "10") @Positive Integer size) {
-        log.info("Get all itemRequest, userId={}, from={}, size={}", userId, from, size);
         return requestClient.get(from, size, userId);
     }
 
@@ -57,7 +54,6 @@ public class ItemRequestController {
      */
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> get(@RequestHeader(SHARER) long userId, @PathVariable Long requestId) {
-        log.info("Get itemRequest by requestId={}, userId={}", requestId, userId);
         return requestClient.get(requestId, userId);
     }
 
@@ -71,7 +67,6 @@ public class ItemRequestController {
     @PostMapping()
     public ResponseEntity<Object> create(@RequestHeader(SHARER) long userId,
                                          @Valid @RequestBody ItemRequestDto itemRequestDto) {
-        log.info("Creating itemRequest={}, userId={}", itemRequestDto, userId);
         return requestClient.create(userId, itemRequestDto);
     }
 }

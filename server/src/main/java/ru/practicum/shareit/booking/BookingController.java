@@ -46,8 +46,8 @@ public class BookingController {
     @GetMapping()
     public List<BookingDto> getUserBookings(@RequestHeader(ConfigConstant.SHARER) long userId,
                                             @RequestParam(value = "state", defaultValue = "ALL") String state,
-                                            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                            @RequestParam(defaultValue = "10") @Positive Integer size) {
+                                            @RequestParam(defaultValue = "0") Integer from,
+                                            @RequestParam(defaultValue = "10") Integer size) {
         return bookingService.getUserBookings(userId, state, from, size);
     }
 
@@ -63,8 +63,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getOwnerBookings(@RequestHeader(ConfigConstant.SHARER) long ownerId,
                                              @RequestParam(name = "state", defaultValue = "ALL") String state,
-                                             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
+                                             @RequestParam(defaultValue = "0") Integer from,
+                                             @RequestParam(defaultValue = "10") Integer size) {
         return bookingService.getOwnerBookings(ownerId, state, from, size);
     }
 
@@ -91,8 +91,8 @@ public class BookingController {
      */
     @PatchMapping("/{bookingId}")
     public BookingDto update(@PathVariable long bookingId,
-                             @RequestParam("approved") String approved,
+                             @RequestParam("approved") boolean approved,
                              @RequestHeader(ConfigConstant.SHARER) long userId) {
-        return bookingService.update(bookingId, approved.toLowerCase(), userId);
+        return bookingService.update(bookingId, approved, userId);
     }
 }

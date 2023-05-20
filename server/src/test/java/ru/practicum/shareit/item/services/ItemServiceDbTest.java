@@ -6,11 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.models.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exceptions.ObjectAvailabilityDenyException;
 import ru.practicum.shareit.exceptions.ObjectUnknownException;
 import ru.practicum.shareit.item.mappers.CommentMapper;
 import ru.practicum.shareit.item.mappers.ItemMapper;
@@ -28,7 +26,6 @@ import ru.practicum.shareit.user.models.dto.UserDto;
 import ru.practicum.shareit.user.services.UserService;
 import ru.practicum.shareit.util.OffsetPageRequest;
 
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -119,28 +116,28 @@ class ItemServiceDbTest {
         verify(itemRepository, times(1)).findById(anyLong());
     }
 
-//    @Test
-//    void getItem_whenTextFound_thenReturnedItem() {
-//        when(itemRepository.findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(),
-//                anyString(), any(PageRequest.class))).thenReturn(List.of(item));
-//        when(userService.get(anyLong())).thenReturn(userDto);
-//
-//        List<ItemDto> actualItem = itemServiceDb.search(anyLong(), "text",anyInt(), anyInt());
-//
-//        assertEquals(actualItem.get(0).getId(), item.getId());
-//        verify(itemRepository, times(1))
-//                .findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString(),any(PageRequest.class));
-//    }
+    @Test
+    void getItem_whenTextFound_thenReturnedItem() {
+        when(itemRepository.findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(),
+                anyString(), any(OffsetPageRequest.class))).thenReturn(List.of(item));
+        when(userService.get(anyLong())).thenReturn(userDto);
 
-//    @Test
-//    void getItem_whenTextIsEmpty_thenReturnedEmptyList() {
-//        when(userService.get(anyLong())).thenReturn(userDto);
-//
-//        List<ItemDto> actualItem = itemServiceDb.search(anyLong(), " ", anyInt(),anyInt());
-//
-//        assertEquals(actualItem.size(), 0);
-//        verify(itemRepository, never()).findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString(),any(PageRequest.class));
-//    }
+        List<ItemDto> actualItem = itemServiceDb.search(anyLong(), "text", 1, 1);
+
+        assertEquals(actualItem.get(0).getId(), item.getId());
+        verify(itemRepository, times(1))
+                .findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString(), any(OffsetPageRequest.class));
+    }
+
+    @Test
+    void getItem_whenTextIsEmpty_thenReturnedEmptyList() {
+        when(userService.get(anyLong())).thenReturn(userDto);
+
+        List<ItemDto> actualItem = itemServiceDb.search(anyLong(), " ", 1, 1);
+
+        assertEquals(actualItem.size(), 0);
+        verify(itemRepository, never()).findAllByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(anyString(), anyString(), any(OffsetPageRequest.class));
+    }
 
     @Test
     void createItem_whenUserFoundAndItemValid_thenReturnedItem() {

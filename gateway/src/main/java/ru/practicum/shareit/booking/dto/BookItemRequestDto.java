@@ -1,21 +1,19 @@
 package ru.practicum.shareit.booking.dto;
 
-import java.time.LocalDateTime;
+import lombok.Getter;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
+import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+/**
+ * Модель объекта BookItemRequest Data Transfer Object
+ */
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class BookItemRequestDto {
-	private long itemId;
-	@FutureOrPresent
-	private LocalDateTime start;
-	@Future
-	private LocalDateTime end;
+    private long itemId;
+    @FutureOrPresent
+    private LocalDateTime start;
+    @Future
+    private LocalDateTime end;
 }

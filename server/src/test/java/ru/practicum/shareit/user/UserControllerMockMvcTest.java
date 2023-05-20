@@ -95,37 +95,6 @@ class UserControllerMockMvcTest {
 
     @Test
     @SneakyThrows
-    void createUser_whenUserNameNotValid_thenReturnBadRequest() {
-        UserDto wrongUser = UserMapper.toUserDto(new User(1L, null, "User1@yandex.ru"));
-
-        when(userService.create(any())).thenReturn(wrongUser);
-
-        mockMvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(wrongUser)))
-                .andExpect(status().isBadRequest());
-
-        verify(userService, never()).create(wrongUser);
-    }
-
-    @Test
-    @SneakyThrows
-    void createUser_whenUserEmailNotValid_thenReturnBadRequest() {
-        UserDto wrongUser = UserMapper.toUserDto(new User(1L, "User1", "NotEmail"));
-
-        when(userService.create(any())).thenReturn(wrongUser);
-
-        mockMvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(wrongUser)))
-                .andExpect(status().isBadRequest());
-
-        verify(userService, never()).create(wrongUser);
-    }
-
-
-    @Test
-    @SneakyThrows
     void updateUser_whenUserIsUpdate_thenReturnStatusOkAndUpdateUser() {
         UserDto userDtoToUpdate = UserMapper.toUserDto(new User(2L, "User2", "User2@yandex.ru"));
         when(userService.update(userDtoToUpdate.getId(), userDtoToUpdate)).thenReturn(userDtoToUpdate);

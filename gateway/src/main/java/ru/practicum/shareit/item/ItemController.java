@@ -1,9 +1,8 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -11,18 +10,16 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.Collections;
-import java.util.List;
 
+import static ru.practicum.shareit.ConfigConstant.SHARER;
+
+
+@Controller
 @RequiredArgsConstructor
-@RestController
-@Slf4j
-@Validated
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemClient itemClient;
 
-    private static final String SHARER = "X-Sharer-User-Id";
+    private final ItemClient itemClient;
 
     /**
      * Метод (эндпоинт) получения списка ItemDto по ID пользователя
@@ -32,7 +29,6 @@ public class ItemController {
      */
     @GetMapping()
     public ResponseEntity<Object> get(@RequestHeader(SHARER) Long userId) {
-        log.info("Get all Items by user={}", userId);
         return itemClient.get(userId);
     }
 
@@ -45,7 +41,6 @@ public class ItemController {
      */
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> get(@RequestHeader(SHARER) Long userId, @PathVariable("itemId") Long itemId) {
-        log.info("Get Item by user={}, with itemId={}", userId, itemId);
         return itemClient.get(userId, itemId);
     }
 
@@ -54,14 +49,15 @@ public class ItemController {
      *
      * @param userId ID пользователя
      * @param text   Текст поиска
+     * @param from   индекс первого элемента
+     * @param size   количество элементов для отображения
      * @return Список ItemDto
      */
     @GetMapping("/search")
     public ResponseEntity<Object> search(@RequestHeader(SHARER) Long userId,
-                                                     @RequestParam(value = "text") String text,
-                                                     @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                                     @Positive @RequestParam(defaultValue = "10") Integer size) {
-        log.info("Get Item from text={}, with userId={}", text, userId);
+                                         @RequestParam(value = "text") String text,
+                                         @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                         @RequestParam(defaultValue = "10") @Positive Integer size) {
         return itemClient.search(text, from, size, userId);
     }
 
@@ -74,7 +70,6 @@ public class ItemController {
      */
     @PostMapping()
     public ResponseEntity<Object> create(@RequestHeader(SHARER) Long userId, @RequestBody @Valid ItemDto itemDto) {
-        log.info("Create Item by user={}, item name={}", userId, itemDto.getName());
         return itemClient.create(userId, itemDto);
     }
 
@@ -87,11 +82,9 @@ public class ItemController {
      * @return Созданный CommentDto
      */
     @PostMapping("/{itemId}/comment")
-
     public ResponseEntity<Object> create(@RequestHeader(SHARER) Long userId,
                                          @PathVariable("itemId") Long itemId,
                                          @Valid @RequestBody CommentDto commentDto) {
-        log.info("Comment added for item={}, with userId={}", itemId, userId);
         return itemClient.create(userId, itemId, commentDto);
     }
 
@@ -104,8 +97,9 @@ public class ItemController {
      * @return Обновлённый ItemDto
      */
     @PatchMapping("/{itemId}")
-    public ResponseEntity<Object> update(@RequestHeader(SHARER) Long userId, @PathVariable("itemId") Long itemId, @RequestBody ItemDto itemDto) {
-        log.info("Update Item by user={}, with itemId={}", userId, itemId);
+    public ResponseEntity<Object> update(@RequestHeader(SHARER) Long userId,
+                                         @PathVariable("itemId") Long itemId,
+                                         @RequestBody ItemDto itemDto) {
         return itemClient.update(userId, itemId, itemDto);
     }
 }

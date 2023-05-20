@@ -113,15 +113,15 @@ class BookingControllerTest {
     @Test
     @SneakyThrows
     void update() {
-        when(bookingService.update(anyLong(), anyString(), anyLong())).thenReturn(bookingDto);
+        when(bookingService.update(anyLong(), anyBoolean(), anyLong())).thenReturn(bookingDto);
 
         mockMvc.perform(patch("/bookings/{bookingId}", 1L)
-                        .param("approved", "APPROVED")
+                        .param("approved", "true")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(ConfigConstant.SHARER, 1L))
                 .andExpect(status().isOk());
 
-        verify(bookingService, times(1)).update(anyLong(), anyString(), anyLong());
+        verify(bookingService, times(1)).update(anyLong(), anyBoolean(), anyLong());
 
     }
 }
