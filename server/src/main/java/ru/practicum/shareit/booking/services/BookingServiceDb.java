@@ -58,7 +58,6 @@ public class BookingServiceDb implements BookingService {
     @Transactional(readOnly = true)
     public List<BookingDto> getUserBookings(Long userId, BookingState bookingState, Integer from, Integer size) {
         userService.get(userId);
-        //BookingState bookingState = checkUserAndBookingState(userId, state);
         List<Booking> bookingList = null;
         OffsetPageRequest offsetPageRequest = new OffsetPageRequest(from, size, Sort.by(Sort.Direction.DESC, "start"));
         switch (bookingState) {
@@ -90,7 +89,6 @@ public class BookingServiceDb implements BookingService {
     @Transactional(readOnly = true)
     public List<BookingDto> getOwnerBookings(Long ownerId, BookingState bookingState, Integer from, Integer size) {
         userService.get(ownerId);
-        //BookingState bookingState = checkUserAndBookingState(ownerId, state);
         List<Booking> bookingList = null;
         OffsetPageRequest offsetPageRequest = new OffsetPageRequest(from, size, Sort.by(Sort.Direction.DESC, "start"));
         switch (bookingState) {
@@ -127,12 +125,6 @@ public class BookingServiceDb implements BookingService {
         if (!item.getAvailable()) {
             throw new ObjectAvailabilityDenyException("Бронирование Item: " + item.getId() + " недоступно");
         }
-        if (bookingDto.getStart() == null || bookingDto.getEnd() == null
-                || bookingDto.getStart().isAfter(bookingDto.getEnd())
-                || bookingDto.getStart().isEqual(bookingDto.getEnd())
-                || bookingDto.getStart().isBefore(LocalDateTime.now())) {
-            throw new ObjectAvailabilityDenyException("Ошибка во времени Start/End time");
-        }
         if (Objects.equals(item.getOwner().getId(), userId)) {
             throw new ObjectAccessDeniedException("Владелец не может забронировать свой предмет");
         }
@@ -163,20 +155,4 @@ public class BookingServiceDb implements BookingService {
                 bookingId, approved, userId);
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
-
-//    /**
-//     * Метод проверки наличия пользователя в БД и статуса бронирования
-//     *
-//     * @param id    ID пользователя
-//     * @param state Статус
-//     * @return Проверенный статус
-//     */
-//    private BookingState checkUserAndBookingState(Long id, String state) {
-//        userService.get(id);
-//        BookingState bookingState = BookingState.from(state);
-//        if (bookingState == null) {
-//            throw new UnknownStatusException("Unknown state: " + state);
-//        }
-//        return bookingState;
-//    }
 }

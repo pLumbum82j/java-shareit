@@ -31,7 +31,7 @@ public class BookingController {
      * @return Объект BookingDto
      */
     @GetMapping("/{bookingId}")
-    public ResponseEntity<Object> get(@RequestHeader(SHARER) long userId,
+    public ResponseEntity<Object> get(@RequestHeader(SHARER) Long userId,
                                       @PathVariable Long bookingId) {
         return bookingClient.get(userId, bookingId);
     }
@@ -46,7 +46,7 @@ public class BookingController {
      * @return Список объектов BookingDto
      */
     @GetMapping
-    public ResponseEntity<Object> getUserBookings(@RequestHeader(SHARER) long userId,
+    public ResponseEntity<Object> getUserBookings(@RequestHeader(SHARER) Long userId,
                                                   @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
                                                   @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
                                                   @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
@@ -63,7 +63,7 @@ public class BookingController {
      * @return Список объектов BookingDto
      */
     @GetMapping("/owner")
-    public ResponseEntity<Object> getOwnerBookings(@RequestHeader(SHARER) long ownerId,
+    public ResponseEntity<Object> getOwnerBookings(@RequestHeader(SHARER) Long ownerId,
                                                    @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
                                                    @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                                    @RequestParam(defaultValue = "10") @Positive Integer size) {
@@ -78,7 +78,7 @@ public class BookingController {
      * @return Созданный BookingDto
      */
     @PostMapping
-    public ResponseEntity<Object> create(@RequestHeader(SHARER) long userId,
+    public ResponseEntity<Object> create(@RequestHeader(SHARER) Long userId,
                                          @RequestBody @Valid BookItemRequestDto requestDto) {
         return bookingClient.create(userId, requestDto);
     }

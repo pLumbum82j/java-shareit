@@ -25,8 +25,8 @@ public class UserController {
      * @return Список UserDto
      */
     @GetMapping()
-    public ResponseEntity<Object> get() {
-        return userClient.get();
+    public ResponseEntity<Object> getAll() {
+        return userClient.getAll();
     }
 
     /**

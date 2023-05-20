@@ -250,20 +250,6 @@ class BookingServiceDbTest {
     }
 
     @Test
-    void createBooking_whenNewUserAndNewBookingTimeNotValid_thenNotSavedBooking() {
-        ReceivedBookingDto bookingDto = new ReceivedBookingDto(1L, LocalDateTime.now(), LocalDateTime.now());
-        User newUser = new User(22L, "User22", "User2@yandex.ru");
-        when(userService.get(any())).thenReturn(UserMapper.toUserDto(newUser));
-        when(itemService.getItem(1L)).thenReturn(item);
-
-        ObjectAvailabilityDenyException objectAvailabilityDenyException = assertThrows(ObjectAvailabilityDenyException.class,
-                () -> bookingServiceDb.create(bookingDto, newUser.getId()));
-
-        assertEquals(objectAvailabilityDenyException.getMessage(), "Ошибка во времени Start/End time");
-        verify(bookingRepository, never()).save(any(Booking.class));
-    }
-
-    @Test
     void createBooking_whenNewUserAndNewBookingAndItemNotValid_thenNotSavedBooking() {
         ReceivedBookingDto bookingDto = new ReceivedBookingDto(1L, LocalDateTime.now().plusMinutes(1), LocalDateTime.now().plusMinutes(2));
         User newUser = new User(22L, "User22", "User2@yandex.ru");

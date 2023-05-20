@@ -94,7 +94,7 @@ public class ItemServiceDb implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Item getItem(long itemId) {
+    public Item getItem(Long itemId) {
         log.debug("Получен запрос на поиск Item по itemId: {}", itemId);
         return itemRepository.findById(itemId).orElseThrow(() -> new ObjectUnknownException("Item с ID: " + itemId + " не существует"));
     }
@@ -131,7 +131,7 @@ public class ItemServiceDb implements ItemService {
 
     @Override
     @Transactional
-    public CommentDto create(CommentDto commentDto, long itemId, long userId) {
+    public CommentDto create(CommentDto commentDto, Long itemId, Long userId) {
         User user = UserMapper.toUser(userService.get(userId));
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ObjectUnknownException("Item с ID: " + itemId + " не существует"));
         Comment comment = CommentMapper.toComment(commentDto);

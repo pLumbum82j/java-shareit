@@ -52,7 +52,7 @@ public class ItemRequestController {
      * @return Объект ItemRequestDto
      */
     @GetMapping("/{requestId}")
-    public ItemRequestDto get(@RequestHeader(ConfigConstant.SHARER) long userId, @PathVariable Long requestId) {
+    public ItemRequestDto get(@RequestHeader(ConfigConstant.SHARER) Long userId, @PathVariable Long requestId) {
         return itemRequestService.get(userId, requestId);
     }
 
@@ -64,7 +64,7 @@ public class ItemRequestController {
      * @return Созданный объект itemRequestDto
      */
     @PostMapping()
-    public ItemRequestDto create(@RequestHeader(ConfigConstant.SHARER) long userId,
+    public ItemRequestDto create(@RequestHeader(ConfigConstant.SHARER) Long userId,
                                  @RequestBody ItemRequestDto itemRequestDto) {
         return itemRequestService.create(userId, itemRequestDto);
     }

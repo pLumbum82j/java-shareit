@@ -31,7 +31,7 @@ public class UserClient extends BaseClient {
      *
      * @return Список UserDto
      */
-    public ResponseEntity<Object> get() {
+    public ResponseEntity<Object> getAll() {
         log.debug("Получен запрос на список всех пользователей");
         return get("");
     }
@@ -42,7 +42,7 @@ public class UserClient extends BaseClient {
      * @param userId ID пользователя
      * @return Объект UserDto
      */
-    public ResponseEntity<Object> get(long userId) {
+    public ResponseEntity<Object> get(Long userId) {
         log.debug("Получен запрос на поиск пользователя по ID: {}", userId);
         return get("/" + userId);
     }

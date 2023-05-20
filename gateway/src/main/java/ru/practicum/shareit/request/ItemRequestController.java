@@ -53,7 +53,7 @@ public class ItemRequestController {
      * @return Объект ItemRequestDto
      */
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> get(@RequestHeader(SHARER) long userId, @PathVariable Long requestId) {
+    public ResponseEntity<Object> get(@RequestHeader(SHARER) Long userId, @PathVariable Long requestId) {
         return requestClient.get(requestId, userId);
     }
 
@@ -65,7 +65,7 @@ public class ItemRequestController {
      * @return Созданный объект itemRequestDto
      */
     @PostMapping()
-    public ResponseEntity<Object> create(@RequestHeader(SHARER) long userId,
+    public ResponseEntity<Object> create(@RequestHeader(SHARER) Long userId,
                                          @Valid @RequestBody ItemRequestDto itemRequestDto) {
         return requestClient.create(userId, itemRequestDto);
     }

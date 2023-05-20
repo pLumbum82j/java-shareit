@@ -39,7 +39,7 @@ public class ItemController {
      * @return Объект ItemDto
      */
     @GetMapping("/{itemId}")
-    public ItemDto get(@RequestHeader(ConfigConstant.SHARER) long userId, @PathVariable Long itemId) {
+    public ItemDto get(@RequestHeader(ConfigConstant.SHARER) Long userId, @PathVariable Long itemId) {
         return itemService.get(userId, itemId);
     }
 
@@ -51,7 +51,7 @@ public class ItemController {
      * @return Список ItemDto
      */
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestHeader(ConfigConstant.SHARER) long userId,
+    public List<ItemDto> search(@RequestHeader(ConfigConstant.SHARER) Long userId,
                                 @RequestParam String text,
                                 @RequestParam(defaultValue = "0") Integer from,
                                 @RequestParam(defaultValue = "10") Integer size) {
@@ -66,7 +66,7 @@ public class ItemController {
      * @return Созданный ItemDto
      */
     @PostMapping()
-    public ItemDto create(@RequestHeader(ConfigConstant.SHARER) long userId,
+    public ItemDto create(@RequestHeader(ConfigConstant.SHARER) Long userId,
                           @RequestBody ItemDto itemDto) {
         return itemService.create(userId, itemDto);
     }
@@ -80,8 +80,8 @@ public class ItemController {
      * @return Созданный CommentDto
      */
     @PostMapping("/{itemId}/comment")
-    public CommentDto create(@RequestHeader(ConfigConstant.SHARER) long userId,
-                             @PathVariable long itemId,
+    public CommentDto create(@RequestHeader(ConfigConstant.SHARER) Long userId,
+                             @PathVariable Long itemId,
                              @RequestBody CommentDto commentDto
     ) {
         return itemService.create(commentDto, itemId, userId);
@@ -96,7 +96,7 @@ public class ItemController {
      * @return Обновлённый ItemDto
      */
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(ConfigConstant.SHARER) long userId,
+    public ItemDto update(@RequestHeader(ConfigConstant.SHARER) Long userId,
                           @Valid @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
         return itemService.update(userId, itemId, itemDto);
     }

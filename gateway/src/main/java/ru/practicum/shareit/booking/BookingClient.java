@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.exceptions.BadRequestException;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Slf4j
@@ -37,7 +38,7 @@ public class BookingClient extends BaseClient {
      * @param userId    ID пользователя
      * @return Объект BookingDto
      */
-    public ResponseEntity<Object> get(long userId, Long bookingId) {
+    public ResponseEntity<Object> get(Long userId, Long bookingId) {
         log.debug("Получен запрос на поиск бронирования по bookingId: {}, userId: {}", bookingId, userId);
         return get("/" + bookingId, userId);
     }
@@ -45,13 +46,13 @@ public class BookingClient extends BaseClient {
     /**
      * Метод получения списка BookingDto по userId и state
      *
-     * @param userId ID пользователя
-     * @param stateParam  Статус
-     * @param from   индекс первого элемента
-     * @param size   количество элементов для отображения
+     * @param userId     ID пользователя
+     * @param stateParam Статус
+     * @param from       индекс первого элемента
+     * @param size       количество элементов для отображения
      * @return Список объектов BookingDto
      */
-    public ResponseEntity<Object> getUserBookings(long userId, String stateParam, Integer from, Integer size) {
+    public ResponseEntity<Object> getUserBookings(Long userId, String stateParam, Integer from, Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new BadRequestException("Unknown state: " + stateParam));
         Map<String, Object> parameters = Map.of(
@@ -66,10 +67,10 @@ public class BookingClient extends BaseClient {
     /**
      * Метод получения списка BookingDto по ownerId и state
      *
-     * @param ownerId ID владельца
-     * @param stateParam   Статус
-     * @param from    индекс первого элемента
-     * @param size    количество элементов для отображения
+     * @param ownerId    ID владельца
+     * @param stateParam Статус
+     * @param from       индекс первого элемента
+     * @param size       количество элементов для отображения
      * @return Список объектов BookingDto
      */
     public ResponseEntity<Object> getOwnerBookings(Long ownerId, String stateParam, Integer from, Integer size) {
@@ -91,8 +92,14 @@ public class BookingClient extends BaseClient {
      * @param userId     ID пользователя
      * @return Созданный объект BookingDto
      */
-    public ResponseEntity<Object> create(long userId, BookItemRequestDto requestDto) {
+    public ResponseEntity<Object> create(Long userId, BookItemRequestDto requestDto) {
         log.debug("Получен запрос создание бронирования userId: {}, itemId: {}", userId, requestDto.getItemId());
+        if (requestDto.getStart() == null || requestDto.getEnd() == null
+                || requestDto.getStart().isAfter(requestDto.getEnd())
+                || requestDto.getStart().isEqual(requestDto.getEnd())
+                || requestDto.getStart().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Ошибка во времени Start/End time");
+        }
         return post("", userId, requestDto);
     }
 
