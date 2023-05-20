@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.models.dto.UserDto;
 import ru.practicum.shareit.user.services.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**

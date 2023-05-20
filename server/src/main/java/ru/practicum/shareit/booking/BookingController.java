@@ -2,13 +2,11 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.util.ConfigConstant;
 import ru.practicum.shareit.booking.models.dto.BookingDto;
 import ru.practicum.shareit.booking.models.dto.ReceivedBookingDto;
 import ru.practicum.shareit.booking.services.BookingService;
+import ru.practicum.shareit.util.ConfigConstant;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
