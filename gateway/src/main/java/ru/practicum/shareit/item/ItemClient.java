@@ -64,7 +64,7 @@ public class ItemClient extends BaseClient {
      * @return Список ItemDto
      */
     public ResponseEntity<Object> search(String text, Integer from, Integer size, Long userId) {
-        if (text == null || text.isEmpty()) {
+        if (text == null || text.isEmpty() || text.isBlank()) {
             log.debug("Получен запрос на список ItemDto по text: {} - ничего не найдено", text);
             return ResponseEntity.status(HttpStatus.OK).body(List.of());
         }
